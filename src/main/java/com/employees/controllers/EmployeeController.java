@@ -16,9 +16,9 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
 
-    @PostMapping(path = "/add") // Map ONLY POST Requests
-    public @ResponseBody
-    String addNewEmployee(@RequestBody Employee employee)
+    @PostMapping(path = "/addNewEmployee") // Map ONLY POST Requests
+    @ResponseBody
+    public String addNewEmployee(@RequestBody Employee employee)
     // @RequestParam means it is a parameter from the GET or POST request
     {
         //WHAT ABOUT FKS (manager, managed team, team....) ?????
