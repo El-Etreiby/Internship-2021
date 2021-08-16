@@ -3,6 +3,7 @@ package com.employees;
 import com.employees.models.Department;
 import com.employees.models.Employee;
 import com.employees.repositories.DepartmentRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.text.SimpleDateFormat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,6 +64,16 @@ public class EmployeeTests {
 //        String response =  controller.addNewEmployee("Ahmed",'M',new SimpleDateFormat("mm/dd/yyyy").parse("1/1/2000"),expertise,new SimpleDateFormat("mm/dd/yyyy").parse("1/1/2018"),10000.0,"web development");
 //        // assert
 //        assertEquals("Employee Saved!",response);
+    }
+   // @Transactional
+    @Test
+    public void test_delete_employee() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/removeEmployee")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(17)))
+                .andExpect(status().isOk());
     }
 
 }

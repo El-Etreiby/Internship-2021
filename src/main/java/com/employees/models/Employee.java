@@ -12,7 +12,7 @@ public class Employee {
     private Integer employeeId;
 
     // private Set<String> expertise;
-    private String name;
+    private String employeeName;
     private Date dob;
     private char gender;
     private Date graduationDate;
@@ -98,11 +98,11 @@ public class Employee {
     }
 
     public String getName() {
-        return name;
+        return employeeName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.employeeName = name;
     }
 
     public Date getDob() {
@@ -152,5 +152,14 @@ public class Employee {
 //    }
     public Employee() {
 
+    }
+    public String toString(){
+        return "ID: " + this.employeeId + "\n"
+             + "Name: " + this.employeeName + "\n"
+             + "DoB: " + this.dob + "\n"
+             + "DoG: " + this.graduationDate + "\n"
+             + "Gender: " + this.gender + "\n"
+             + "Gross salary: " + this.grossSalary + "\n"
+             + "Net salary: "  + this.netSalary ;
     }
 }
