@@ -1,7 +1,6 @@
 package com.employees.models;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -9,7 +8,6 @@ public class Department {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer departmentId;
-
     private String departmentName;
 //many side is the owning side (owns FK)!!!!
     // joinColumn("fk name")

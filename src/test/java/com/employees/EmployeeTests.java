@@ -3,7 +3,6 @@ package com.employees;
 import com.employees.models.Department;
 import com.employees.models.Employee;
 import com.employees.repositories.DepartmentRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //@RunWith(SpringRunner.class)
@@ -39,8 +39,7 @@ public class EmployeeTests {
         Department newDepartment = new Department();
         newDepartment.setDepartmentName("web development");
         departmentRepository.save(newDepartment);
-        newEmployee.setName("A");
-        newEmployee.setEmployeeId(1);
+        newEmployee.setEmployeeName("A");
         newEmployee.setGender('M');
         newEmployee.setGrossSalary(10000.0);
         newEmployee.setDob(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2000"));
@@ -73,6 +72,19 @@ public class EmployeeTests {
                         .post("/removeEmployee")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(17)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void test_add_employee_to_team() throws Exception {
+        ArrayList<Integer> IDs = new ArrayList<Integer>();
+        IDs.add(2);
+        IDs.add(5);
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/addEmployeeToTeam")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(IDs)))
                 .andExpect(status().isOk());
     }
 

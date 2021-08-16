@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.employees.repositories.EmployeeRepository;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,14 +14,17 @@ public class EmployeeService {
     @Autowired
     EmployeeRepository employeeRepository;
 
-    public void saveEmployee(Employee employee) {
+    public String addNewEmployee(Employee employee) {
         employeeRepository.save(employee);
+        return "Employee added successfully!";
     }
 
-    public void removeEmployee(Integer employeeToBeRemoved) throws Exception {
+    public String removeEmployee(Integer employeeToBeRemoved) throws Exception {
         Optional<Employee> toBeRemoved = employeeRepository.findById(employeeToBeRemoved);
-        if (toBeRemoved.isPresent())
+        if (toBeRemoved.isPresent()) {
             employeeRepository.deleteById(employeeToBeRemoved);
+            return "Employee deleted successfully!";
+        }
         else
             throw new Exception("You're trying to delete a non existing employee");
 
@@ -39,4 +40,17 @@ public class EmployeeService {
             }
         };
     }
+
+    public void addEmployeeToTeam(Integer employeeId, Integer teamId) throws Exception {
+        Optional<Employee> toBeUpdated = employeeRepository.findById(employeeId);
+        if (!toBeUpdated.isPresent()) {
+            throw new Exception("This employee does not exist");
+        }
+        employeeRepository.addEmployeeToTeam(employeeId,teamId);
+    }
+
+//        } //modification beygeely employee object
+        //REST naming convention for update --> path variables
+        //search for query DSL
+
 }

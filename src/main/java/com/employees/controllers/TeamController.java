@@ -1,8 +1,6 @@
 package com.employees.controllers;
 
-import com.employees.models.Employee;
 import com.employees.models.Team;
-import com.employees.services.EmployeeService;
 import com.employees.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +17,7 @@ public class TeamController {
     // @RequestParam means it is a parameter from the GET or POST request
     {
         //WHAT ABOUT FKS (manager, managed team, team....) ?????
-        teamService.saveTeam(team);
+        teamService.addNewTeam(team);
         return "Team Saved!";
     }
     @PostMapping(path = "/removeTeam") // Map ONLY POST Requests

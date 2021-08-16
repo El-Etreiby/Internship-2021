@@ -1,7 +1,6 @@
 package com.employees.models;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,11 +19,11 @@ public class Employee {
     private Double netSalary;
 
     @ManyToOne
-    @JoinColumn(name = "departmentId")
+    @JoinColumn(name = "department_id")
     private Department department;
 
     @ManyToOne
-    @JoinColumn(name = "teamId")
+    @JoinColumn(name = "team_id")
     private Team employeeTeam; //the team the employee belongs to
 
     @OneToMany(mappedBy = "manager",
@@ -33,7 +32,7 @@ public class Employee {
     private List<Employee> managedEmployees;
 
     @ManyToOne
-    @JoinColumn(name = "managerId")
+    @JoinColumn(name = "manager_id")
     private Employee manager;
 
     public Double getGrossSalary() {
@@ -46,10 +45,6 @@ public class Employee {
 
     public Integer getEmployeeId() {
         return employeeId;
-    }
-
-    public void setEmployeeId(int employeeId) {
-        this.employeeId = employeeId;
     }
 
 //    public Set<String> getExpertise() {
@@ -97,11 +92,11 @@ public class Employee {
         this.department = department;
     }
 
-    public String getName() {
+    public String getEmployeeName() {
         return employeeName;
     }
 
-    public void setName(String name) {
+    public void setEmployeeName(String name) {
         this.employeeName = name;
     }
 

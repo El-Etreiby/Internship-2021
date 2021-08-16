@@ -1,12 +1,11 @@
 package com.employees.controllers;
 
-import com.employees.models.Department;
 import com.employees.models.Employee;
 import com.employees.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.util.ArrayList;
 
 @RestController // This means that this class is a Controller
 //@RequestMapping(path = "/") // This means URL's start with /demo (after Application path)
@@ -22,8 +21,8 @@ public class EmployeeController {
     // @RequestParam means it is a parameter from the GET or POST request
     {
         //WHAT ABOUT FKS (manager, managed team, team....) ?????
-        employeeService.saveEmployee(employee);
-        return "Employee Saved!";
+        employeeService.addNewEmployee(employee);
+        return "Employee added successfully!";
     }
     @PostMapping(path = "/removeEmployee") // Map ONLY POST Requests
     @ResponseBody //search
@@ -32,6 +31,20 @@ public class EmployeeController {
         employeeService.removeEmployee(employeeId);
         return "Employee Removed!";
     }
+
+    @PostMapping(path = "/addEmployeeToTeam") // Map ONLY POST Requests
+    @ResponseBody
+    public String addEmployeeToTeam(@RequestBody ArrayList<Integer> IDs) throws Exception {
+        Integer employeeId = IDs.get(0);
+        Integer teamId = IDs.get(1);
+        employeeService.addEmployeeToTeam(employeeId,teamId);
+        return "Employee added to team!";
+    }
+
+//    @Modifying
+//    @Query("update User u set u.active = false where u.lastLoginDate < :date")
+//    void deactivateUsersNotLoggedInSince(@Param("date") LocalDate date);
+
 //    @GetMapping(path = "/all")
 //    public @ResponseBody
 //    Iterable<Employee> getAllEmployees() {

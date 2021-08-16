@@ -1,6 +1,5 @@
 package com.employees.services;
 
-import com.employees.models.Department;
 import com.employees.models.Team;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.employees.repositories.TeamRepository;
@@ -14,14 +13,17 @@ public class TeamService {
     @Autowired
     private TeamRepository teamRepository;
 
-    public void saveTeam(Team team){
+    public String addNewTeam(Team team){
         teamRepository.save(team);
+        return "Team added successfully!";
     }
 
-    public void removeTeam(Integer teamToBeRemoved) throws Exception {
+    public String removeTeam(Integer teamToBeRemoved) throws Exception {
         Optional<Team> toBeRemoved = teamRepository.findById(teamToBeRemoved);
-        if (toBeRemoved.isPresent())
+        if (toBeRemoved.isPresent()) {
             teamRepository.deleteById(teamToBeRemoved);
+            return "Team removed successfully!";
+        }
         else
             throw new Exception("You're trying to delete a non existing team");
     }
