@@ -24,10 +24,10 @@ public class DepartmentTests {
     public void test_department_creation_and_insertion() throws Exception {
         Department newDepartment = new Department();
         newDepartment.setDepartmentId(1);
-        newDepartment.setDepartmentName("Dep1");
+        newDepartment.setDepartmentName("Dep2");
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/addNewDepartment")
+                        .post("/department/add-new-department")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newDepartment)))
                 .andExpect(status().isOk());
@@ -36,9 +36,9 @@ public class DepartmentTests {
     public void test_delete_department() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/removeDepartment")
+                        .post("/department/remove-department")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(12)))
+                        .content(objectMapper.writeValueAsString(1)))
                 .andExpect(status().isOk());
     }
 }

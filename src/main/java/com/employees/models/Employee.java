@@ -27,7 +27,6 @@ public class Employee {
     private Team employeeTeam; //the team the employee belongs to
 
     @OneToMany(mappedBy = "manager",
-    orphanRemoval = true,
     cascade = CascadeType.ALL)
     private List<Employee> managedEmployees;
 

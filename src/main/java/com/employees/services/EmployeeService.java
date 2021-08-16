@@ -49,6 +49,14 @@ public class EmployeeService {
         employeeRepository.addEmployeeToTeam(employeeId,teamId);
     }
 
+    public void addEmployeeToDepartment(Integer employeeId, Integer departmentId) throws Exception {
+        Optional<Employee> toBeUpdated = employeeRepository.findById(employeeId);
+        if (!toBeUpdated.isPresent()) {
+            throw new Exception("This employee does not exist");
+        }
+        employeeRepository.addEmployeeToDepartment(employeeId,departmentId);
+    }
+
 //        } //modification beygeely employee object
         //REST naming convention for update --> path variables
         //search for query DSL

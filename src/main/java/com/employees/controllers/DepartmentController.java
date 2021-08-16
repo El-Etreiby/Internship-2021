@@ -6,19 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/")
+@RequestMapping(path = "/department")
 public class DepartmentController {
 
     @Autowired
     private DepartmentService departmentService;
 
-    @PostMapping(path = "/addNewDepartment")
+    @PostMapping(path = "/add-new-department")
     @ResponseBody
     public String addNewEmployee(@RequestBody Department department){
         departmentService.addNewDepartment(department);
         return "Department Saved!";
     }
-    @PostMapping(path = "/removeDepartment")
+    @PostMapping(path = "/remove-department")
     @ResponseBody
     public String removeDepartment(@RequestBody Integer departmentToBeRemoved) throws Exception {
         departmentService.removeDepartment(departmentToBeRemoved);

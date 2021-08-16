@@ -1,5 +1,7 @@
 package com.employees;
 
+import com.employees.commands.AddingEmployeeToDepartmentCommand;
+import com.employees.commands.AddingEmployeeToTeamCommand;
 import com.employees.models.Department;
 import com.employees.models.Employee;
 import com.employees.repositories.DepartmentRepository;
@@ -48,7 +50,7 @@ public class EmployeeTests {
         newEmployee.setNetSalary(9000.0);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/addNewEmployee")
+                        .post("/employee")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newEmployee)))
                 .andExpect(status().isOk());
@@ -69,22 +71,36 @@ public class EmployeeTests {
     public void test_delete_employee() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/removeEmployee")
+                        .delete("/employee/7")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(17)))
+                        .content(objectMapper.writeValueAsString(7)))
+                .andExpect(status().isOk());
+    }
+
+    @Test //fel get est3amel DTOs to return data w fel post e3mel command objects to send data
+
+    public void test_add_employee_to_team() throws Exception {
+        AddingEmployeeToTeamCommand command = new AddingEmployeeToTeamCommand();
+        command.setEmployeeId(8);
+        command.setTeamId(11);
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/employee/8/team/11")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void test_add_employee_to_team() throws Exception {
-        ArrayList<Integer> IDs = new ArrayList<Integer>();
-        IDs.add(2);
-        IDs.add(5);
+    public void test_add_employee_to_department() throws Exception {
+        AddingEmployeeToDepartmentCommand command = new AddingEmployeeToDepartmentCommand();
+        command.setEmployeeId(8);
+        command.setDepartmentId(9);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/addEmployeeToTeam")
+                        .post("/employee/8/department/9")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(IDs)))
+                        .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());
     }
 

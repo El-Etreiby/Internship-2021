@@ -5,13 +5,13 @@ import com.employees.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-//@RequestMapping(path = "/")
+@RequestMapping(path = "/team")
 @RestController
 public class TeamController {
     @Autowired
     private TeamService teamService;
 
-    @PostMapping(path = "/addNewTeam") // Map ONLY POST Requests
+    @PostMapping(path = "") // Map ONLY POST Requests {id}
     @ResponseBody
     public String addNewTeam(@RequestBody Team team)
     // @RequestParam means it is a parameter from the GET or POST request
@@ -20,7 +20,7 @@ public class TeamController {
         teamService.addNewTeam(team);
         return "Team Saved!";
     }
-    @PostMapping(path = "/removeTeam") // Map ONLY POST Requests
+    @DeleteMapping(path = "/{id}") // Map ONLY POST Requests
     @ResponseBody
     public String removeTeam(@RequestBody Integer teamToBeRemoved) throws Exception {
         teamService.removeTeam(teamToBeRemoved);

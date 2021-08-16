@@ -25,10 +25,10 @@ public class TeamTests {
     public void test_team_creation_and_insertion() throws Exception {
         Team newTeam = new Team();
         newTeam.setTeamId(1);
-        newTeam.setTeamName("Team 1");
+        newTeam.setTeamName("Team 4");
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/addNewTeam")
+                        .post("/team")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newTeam)))
                 .andExpect(status().isOk());
@@ -38,7 +38,7 @@ public class TeamTests {
     public void test_delete_team() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/removeTeam")
+                        .post("/team/remove-team")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(20)))
                 .andExpect(status().isOk());

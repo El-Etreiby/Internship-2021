@@ -14,7 +14,6 @@ public class Team {
     private String teamName;
 
     @OneToMany (mappedBy="employeeTeam",
-    orphanRemoval = false,
     cascade = CascadeType.ALL) //mappedBy = "fk attribute in other table name"
     private List<Employee> teamMembers;
 
