@@ -33,4 +33,14 @@ public class TeamTests {
                         .content(objectMapper.writeValueAsString(newTeam)))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void test_delete_team() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/removeTeam")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(20)))
+                .andExpect(status().isOk());
+    }
 }

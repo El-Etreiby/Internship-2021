@@ -7,7 +7,7 @@ import com.employees.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping(path = "/")
+//@RequestMapping(path = "/")
 @RestController
 public class TeamController {
     @Autowired
@@ -22,7 +22,12 @@ public class TeamController {
         teamService.saveTeam(team);
         return "Team Saved!";
     }
-
+    @PostMapping(path = "/removeTeam") // Map ONLY POST Requests
+    @ResponseBody
+    public String removeTeam(@RequestBody Integer teamToBeRemoved) throws Exception {
+        teamService.removeTeam(teamToBeRemoved);
+        return "Team Saved!";
+    }
 
 
 }
