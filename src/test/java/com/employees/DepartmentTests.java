@@ -33,4 +33,13 @@ public class DepartmentTests {
                         .content(objectMapper.writeValueAsString(newDepartment)))
                 .andExpect(status().isOk());
     }
+    @Test
+    public void test_delete_department() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/removeDepartment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(12)))
+                .andExpect(status().isOk());
+    }
 }

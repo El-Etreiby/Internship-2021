@@ -20,6 +20,11 @@ public class DepartmentController {
         departmentService.saveDepartment(department);
         return "Department Saved!";
     }
-
+    @PostMapping(path = "/removeDepartment")
+    @ResponseBody
+    public String removeDepartment(@RequestBody Integer departmentToBeRemoved) throws Exception {
+        departmentService.removeDepartment(departmentToBeRemoved);
+        return "Department Removed!";
+    }
 
 }
