@@ -114,4 +114,18 @@ public class EmployeeTests {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void test_modify_employee() throws Exception {
+        Employee modifiedEmployee = new Employee();
+        modifiedEmployee.setEmployeeName("ssssss");
+        modifiedEmployee.setGender('l');
+        modifiedEmployee.setGrossSalary(1313.13);
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/employee/14")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(modifiedEmployee)))
+                .andExpect(status().isOk());
+    }
+
 }

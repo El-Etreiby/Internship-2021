@@ -62,8 +62,14 @@ public class Employee {
         return netSalary;
     }
 
+    public void setNetSalary(){
+        if(this.grossSalary!=null)
+        this.netSalary = this.grossSalary*0.85-500;
+    }
+
     public void setNetSalary(Double netSalary) {
-        this.netSalary = netSalary;
+        if(this.grossSalary!=null)
+            this.netSalary = this.grossSalary*0.85-500;
     }
 
     public List<Employee> getManagedEmployees() {

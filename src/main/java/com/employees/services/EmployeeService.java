@@ -65,6 +65,42 @@ public class EmployeeService {
         employeeRepository.addManagerToEmployee(employeeId,managerId);
     }
 
+    public void updateEmployee(String employeeId, Employee employee) throws Exception {
+        Optional<Employee> toBeUpdated = employeeRepository.findById(Integer.parseInt(employeeId));
+        if (!toBeUpdated.isPresent()) {
+            throw new Exception("This employee does not exist");
+        }
+        if(employee.getEmployeeName()!=null){
+            employeeRepository.updateEmployeeName(Integer.parseInt(employeeId),employee.getEmployeeName());
+        }
+        if(employee.getDepartment()!=null){
+            employeeRepository.updateEmployeeDepartment(Integer.parseInt(employeeId),employee.getDepartment());
+        }
+        if(employee.getEmployeeTeam()!=null){
+            employeeRepository.updateEmployeeTeam(Integer.parseInt(employeeId),employee.getEmployeeTeam());
+        }
+        if(employee.getDob()!=null){
+            employeeRepository.updateEmployeeDob(Integer.parseInt(employeeId),employee.getDob());
+        }
+        if(employee.getGender()=='M'||employee.getGender()=='F'){
+            employeeRepository.updateEmployeeGender(Integer.parseInt(employeeId),employee.getGender());
+        }
+        if(employee.getGraduationDate()!=null){
+            employeeRepository.updateEmployeeGraduationDate(Integer.parseInt(employeeId),employee.getGraduationDate());
+        }
+        if(employee.getGrossSalary()!=null){
+            employeeRepository.updateEmployeeGrossSalary(Integer.parseInt(employeeId),employee.getGrossSalary());
+        }
+        if(employee.getManager()!=null){
+            employeeRepository.updateEmployeeManager(Integer.parseInt(employeeId),employee.getManager());
+        }
+        if(employee.getManagedEmployees()!=null){
+            employeeRepository.updateEmployeeManagedEmployees(Integer.parseInt(employeeId),employee.getManagedEmployees());
+        }
+
+
+    }
+
 //        } //modification beygeely employee object
         //REST naming convention for update --> path variables
         //search for query DSL

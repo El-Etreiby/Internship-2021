@@ -23,6 +23,13 @@ public class EmployeeController {
         employeeService.addNewEmployee(employee);
         return "Employee added successfully!";
     }
+    @PostMapping(path = "/{employeeId}") // Map ONLY POST Requests
+    @ResponseBody //search
+    public String updateEmployee(@RequestBody Employee employee, @PathVariable String employeeId) throws Exception {
+        employeeService.updateEmployee(employeeId,employee);
+        return "Employee added successfully!";
+    }
+
     @DeleteMapping(path = "/{id}") // Map ONLY POST Requests
     @ResponseBody //search
     public String removeEmployee(@PathVariable String id) throws Exception {
