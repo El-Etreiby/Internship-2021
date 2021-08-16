@@ -20,4 +20,8 @@ public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
     @Modifying
     @Query("update Employee e set e.department.departmentId = :departmentId where e.employeeId = :employeeId")
     void addEmployeeToDepartment(Integer employeeId, Integer departmentId);
+    @Transactional
+    @Modifying
+    @Query("update Employee e set e.manager.employeeId = :managerId where e.employeeId = :employeeId")
+    void addManagerToEmployee(Integer employeeId, Integer managerId);
 }

@@ -2,6 +2,7 @@ package com.employees;
 
 import com.employees.commands.AddingEmployeeToDepartmentCommand;
 import com.employees.commands.AddingEmployeeToTeamCommand;
+import com.employees.commands.AddingManagerToEmployeeCommand;
 import com.employees.models.Department;
 import com.employees.models.Employee;
 import com.employees.repositories.DepartmentRepository;
@@ -31,26 +32,22 @@ public class EmployeeTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    DepartmentRepository departmentRepository;
+//    @Autowired
+//    DepartmentRepository departmentRepository;
 
     @Test
     public void test_employee_creation_and_insertion() throws Exception {
        // this.mockMvc = MockMvcBuilders.standaloneSetup(employeeController).build();
         Employee newEmployee = new Employee();
-        Department newDepartment = new Department();
-        newDepartment.setDepartmentName("web development");
-        departmentRepository.save(newDepartment);
-        newEmployee.setEmployeeName("A");
+        newEmployee.setEmployeeName("AAAA");
         newEmployee.setGender('M');
         newEmployee.setGrossSalary(10000.0);
         newEmployee.setDob(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2000"));
         newEmployee.setGraduationDate(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2018"));
-        newEmployee.setDepartment(newDepartment);
         newEmployee.setNetSalary(9000.0);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee")
+                        .post("/employee/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newEmployee)))
                 .andExpect(status().isOk());
@@ -81,11 +78,11 @@ public class EmployeeTests {
 
     public void test_add_employee_to_team() throws Exception {
         AddingEmployeeToTeamCommand command = new AddingEmployeeToTeamCommand();
-        command.setEmployeeId(8);
+        command.setEmployeeId(14);
         command.setTeamId(11);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee/8/team/11")
+                        .post("/employee/14/team/11")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());
@@ -94,11 +91,24 @@ public class EmployeeTests {
     @Test
     public void test_add_employee_to_department() throws Exception {
         AddingEmployeeToDepartmentCommand command = new AddingEmployeeToDepartmentCommand();
-        command.setEmployeeId(8);
+        command.setEmployeeId(14);
         command.setDepartmentId(9);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee/8/department/9")
+                        .post("/employee/14/department/9")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(command)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void test_add_manager_to_employee() throws Exception {
+        AddingManagerToEmployeeCommand command = new AddingManagerToEmployeeCommand();
+        command.setEmployeeId(8);
+        command.setManagerId(14);
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/employee/8/manager/14")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());

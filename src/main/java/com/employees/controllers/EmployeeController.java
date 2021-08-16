@@ -20,7 +20,6 @@ public class EmployeeController {
     public String addNewEmployee(@RequestBody Employee employee)
     // @RequestParam means it is a parameter from the GET or POST request
     {
-        //WHAT ABOUT FKS (manager, managed team, team....) ?????
         employeeService.addNewEmployee(employee);
         return "Employee added successfully!";
     }
@@ -47,6 +46,14 @@ public class EmployeeController {
         Integer intDepartmentId = Integer.parseInt(departmentId);
         employeeService.addEmployeeToDepartment(intEmployeeId,intDepartmentId);
         return "Employee added to department!";
+    }
+    @PostMapping(path = "/{employeeId}/manager/{managerId}") // Map ONLY POST Requests
+    @ResponseBody
+    public String addManagerToEmployee(@PathVariable String employeeId, @PathVariable String managerId) throws Exception {
+        Integer intEmployeeId = Integer.parseInt(employeeId);
+        Integer intManagerId = Integer.parseInt(managerId);
+        employeeService.addManagerToEmployee(intEmployeeId,intManagerId);
+        return "Manager added to employee!";
     }
 //    @DeleteMapping(path = "/team/{id}") // Map ONLY POST Requests
 //    @ResponseBody
