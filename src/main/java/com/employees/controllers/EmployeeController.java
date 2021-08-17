@@ -45,6 +45,18 @@ public class EmployeeController {
         employeeService.removeEmployeesManager(Integer.parseInt(id));
         return "Employee's manager Removed!";
     }
+    @DeleteMapping(path = "/{id}/team") // Map ONLY POST Requests
+    @ResponseBody //search
+    public String removeEmployeesTeam(@PathVariable String id) throws Exception {
+        employeeService.removeEmployeesTeam(Integer.parseInt(id));
+        return "Employee's team Removed!";
+    }
+    @DeleteMapping(path = "/{id}/department") // Map ONLY POST Requests
+    @ResponseBody //search
+    public String removeEmployeesDepartment(@PathVariable String id) throws Exception {
+        employeeService.removeEmployeesDepartment(Integer.parseInt(id));
+        return "Employee's department Removed!";
+    }
 
     @PostMapping(path = "/{employeeId}/team/{teamId}") // Map ONLY POST Requests
     @ResponseBody
@@ -78,7 +90,7 @@ public class EmployeeController {
         System.out.println(result);
         return result;
     }
-    @GetMapping(path = "/") //
+    @GetMapping(path = "/all") //
     @ResponseBody
     public ArrayList<String> getAllEmployees() throws Exception {
         ArrayList<EmployeeDto> dtos = employeeService.getAllEmployees();
@@ -89,6 +101,16 @@ public class EmployeeController {
         System.out.println(result);
         return result;
     }
+
+    @GetMapping(path = "/{employeeId}/salary") //
+    @ResponseBody
+    public String getEmployeeSalary(@PathVariable String employeeId) throws Exception {
+        Integer intEmployeeId = Integer.parseInt(employeeId);
+        String result = employeeService.getEmployeeSalary(intEmployeeId).toString();
+        System.out.println(result);
+        return result;
+    }
+
 //    @DeleteMapping(path = "/team/{id}") // Map ONLY POST Requests
 //    @ResponseBody
 //    public String removeEmployeeFromTeam(@PathVariable String id) throws Exception {

@@ -82,12 +82,22 @@ public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
     @Transactional
     @Modifying
     @Query("update Employee e set e.netSalary = :netSalary where e.employeeId = :parseInt")
-
     void updateEmployeeNetSalary(int parseInt, Double netSalary);
 
     @Transactional
     @Modifying
     @Query("update Employee e set e.manager = null where e.employeeId = :employeeId")
-
     void removeEmployeesManager(int employeeId);
+
+    @Transactional
+    @Modifying
+    @Query("update Employee e set e.employeeTeam = null where e.employeeId = :employeeId")
+    void removeEmployeesTeam(int employeeId);
+
+    @Transactional
+    @Modifying
+    @Query("update Employee e set e.department = null where e.employeeId = :employeeId")
+    void removeEmployeesDepartment(int employeeId);
+
+
 }

@@ -65,6 +65,7 @@ public class Employee {
     }
 
     public Double getNetSalary() {
+        this.setNetSalary();
         return netSalary;
     }
 

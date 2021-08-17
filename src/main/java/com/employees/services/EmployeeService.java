@@ -131,6 +131,29 @@ public class EmployeeService {
         return result;
     }
 
+    public void removeEmployeesTeam(int employeeId) throws Exception {
+        Optional<Employee> toBeUpdated = employeeRepository.findById(employeeId);
+        if(!toBeUpdated.isPresent())
+            throw new Exception("This employee does not exist!");
+        employeeRepository.removeEmployeesTeam(employeeId);
+    }
+
+    public void removeEmployeesDepartment(int employeeId) throws Exception {
+        Optional<Employee> toBeUpdated = employeeRepository.findById(employeeId);
+        if(!toBeUpdated.isPresent())
+            throw new Exception("This employee does not exist!");
+        employeeRepository.removeEmployeesDepartment(employeeId);
+    }
+
+    public String getEmployeeSalary(Integer employeeId) throws Exception {
+        Optional<Employee> toBeUpdated = employeeRepository.findById(employeeId);
+        if(!toBeUpdated.isPresent())
+            throw new Exception("This employee does not exist!");
+        return "Employee's gross salary: " + toBeUpdated.get().getGrossSalary()
+                + ". After taxes and deductions his net salary becomes: " + toBeUpdated.get().getNetSalary();
+
+    }
+
 //        } //modification beygeely employee object
         //REST naming convention for update --> path variables
         //search for query DSL

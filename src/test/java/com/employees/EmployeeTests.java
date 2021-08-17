@@ -149,10 +149,38 @@ public class EmployeeTests {
     }
 
     @Test
+    public void test_remove_team_from_employee() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/employee/8/team")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(8)))
+                .andExpect(status().isOk());
+    }
+    @Test
+    public void test_remove_department_from_employee() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/employee/8/department")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(8)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     public void test_get_all_employees() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/")
+                        .get("/employee/all")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void test_get_employee_salary() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/employee/14/salary")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
