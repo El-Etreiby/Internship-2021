@@ -112,11 +112,24 @@ public class EmployeeController {
         return result;
     }
 
-    @GetMapping(path = "/{employeeId}/manager") //gets employees managed by "employeeId"
+    @GetMapping(path = "/manager/{employeeId}") //gets employees managed by "employeeId"
     @ResponseBody
     public ArrayList<String> getEmployeesUnderManager(@PathVariable String employeeId) throws Exception {
 
         List<EmployeeDto> dtos = employeeService.getEmployeesUnderManager(Integer.parseInt(employeeId));
+        ArrayList<String> result = new ArrayList<String>();
+        for(int i = 0; i < dtos.size(); i++){
+            result.add(dtos.get(i).toString());
+        }
+        System.out.println(result);
+        return result;
+
+    }
+    @GetMapping(path = "/team/{teamId}") //gets employees managed by "employeeId"
+    @ResponseBody
+    public ArrayList<String> getEmployeesInTeam(@PathVariable String teamId) throws Exception {
+
+        List<EmployeeDto> dtos = employeeService.getEmployeesInTeam(Integer.parseInt(teamId));
         ArrayList<String> result = new ArrayList<String>();
         for(int i = 0; i < dtos.size(); i++){
             result.add(dtos.get(i).toString());

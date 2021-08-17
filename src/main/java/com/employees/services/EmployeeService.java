@@ -2,6 +2,8 @@ package com.employees.services;
 
 import com.employees.DTOs.EmployeeDto;
 import com.employees.models.Employee;
+import com.employees.models.Team;
+import com.employees.repositories.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.employees.repositories.EmployeeRepository;
@@ -16,6 +18,9 @@ public class EmployeeService {
 
     @Autowired
     EmployeeRepository employeeRepository;
+
+    @Autowired
+    TeamRepository teamRepository;
 
     public String addNewEmployee(Employee employee) {
         employeeRepository.save(employee);
@@ -161,6 +166,20 @@ public class EmployeeService {
             throw new Exception("This manager does not exist!");
         //System.out.println("Manager found! " + manager.get().getManagedEmployees());
         List<Employee> managedEmployees = manager.get().getManagedEmployees();
+        ArrayList<EmployeeDto> result = new ArrayList<EmployeeDto>();
+        for(int i = 0 ; i < managedEmployees.size(); i++){
+            result.add(new EmployeeDto(managedEmployees.get(i)));
+
+        }
+        return result;
+    }
+
+    public List<EmployeeDto> getEmployeesInTeam(int teamId) throws Exception {
+        Optional<Team> team = teamRepository.findById(teamId);
+        if(!team.isPresent())
+            throw new Exception("This manager does not exist!");
+        //System.out.println("Manager found! " + manager.get().getManagedEmployees());
+        List<Employee> managedEmployees = team.get().getTeamMembers();
         ArrayList<EmployeeDto> result = new ArrayList<EmployeeDto>();
         for(int i = 0 ; i < managedEmployees.size(); i++){
             result.add(new EmployeeDto(managedEmployees.get(i)));

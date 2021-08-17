@@ -79,11 +79,11 @@ public class EmployeeTests {
 
     public void test_add_employee_to_team() throws Exception {
         AddingEmployeeToTeamCommand command = new AddingEmployeeToTeamCommand();
-        command.setEmployeeId(14);
-        command.setTeamId(11);
+        command.setEmployeeId(17);
+        command.setTeamId(10);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee/14/team/11")
+                        .post("/employee/17/team/10")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());
@@ -189,7 +189,16 @@ public class EmployeeTests {
     public void test_get_employees_under_manager() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/14/manager")
+                        .get("/employee/manager/14")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void test_get_employees_in_team() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/employee/team/10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
