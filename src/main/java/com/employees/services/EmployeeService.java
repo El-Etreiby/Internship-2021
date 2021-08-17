@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.employees.repositories.EmployeeRepository;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -119,6 +120,15 @@ public class EmployeeService {
             throw new Exception("This employee does not exist!");
         employeeRepository.removeEmployeesManager(employeeId);
 
+    }
+
+    public ArrayList<EmployeeDto> getAllEmployees() {
+        ArrayList<EmployeeDto> result = new ArrayList<EmployeeDto>();
+        Iterable<Employee> iterableTuple = employeeRepository.findAll();
+        Iterator<Employee> tuple = iterableTuple.iterator();
+        while(tuple.hasNext())
+            result.add(new EmployeeDto(tuple.next()));
+        return result;
     }
 
 //        } //modification beygeely employee object

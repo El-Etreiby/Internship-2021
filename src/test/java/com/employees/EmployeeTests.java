@@ -7,6 +7,7 @@ import com.employees.models.Department;
 import com.employees.models.Employee;
 import com.employees.models.Team;
 import com.employees.repositories.DepartmentRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,6 +134,25 @@ public class EmployeeTests {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/employee/14")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void test_remove_manager_from_employee() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/employee/8/manager")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(8)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void test_get_all_employees() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/employee/")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

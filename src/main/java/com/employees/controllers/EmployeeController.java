@@ -6,6 +6,7 @@ import com.employees.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController // This means that this class is a Controller
@@ -74,6 +75,17 @@ public class EmployeeController {
     public String getEmployee(@PathVariable String employeeId) throws Exception {
         Integer intEmployeeId = Integer.parseInt(employeeId);
         String result = employeeService.getEmployee(intEmployeeId).toString();
+        System.out.println(result);
+        return result;
+    }
+    @GetMapping(path = "/") //
+    @ResponseBody
+    public ArrayList<String> getAllEmployees() throws Exception {
+        ArrayList<EmployeeDto> dtos = employeeService.getAllEmployees();
+        ArrayList<String> result = new ArrayList<String>();
+        for(int i = 0; i < dtos.size(); i++){
+            result.add(dtos.get(i).toString());
+        }
         System.out.println(result);
         return result;
     }
