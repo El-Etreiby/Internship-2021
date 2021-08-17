@@ -41,7 +41,7 @@ public class EmployeeTests {
     public void test_employee_creation_and_insertion() throws Exception {
        // this.mockMvc = MockMvcBuilders.standaloneSetup(employeeController).build();
         Employee newEmployee = new Employee();
-        newEmployee.setEmployeeName("AAAA");
+        newEmployee.setEmployeeName("PPP");
         newEmployee.setGender('M');
         newEmployee.setGrossSalary(10000.0);
         newEmployee.setDob(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2000"));
@@ -109,7 +109,7 @@ public class EmployeeTests {
         command.setManagerId(14);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee/8/manager/14")
+                        .post("/employee/17/manager/14")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());
@@ -181,6 +181,15 @@ public class EmployeeTests {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/employee/14/salary")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void test_get_employees_under_manager() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/employee/14/manager")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

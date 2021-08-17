@@ -8,6 +8,7 @@ import com.employees.repositories.EmployeeRepository;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -152,6 +153,20 @@ public class EmployeeService {
         return "Employee's gross salary: " + toBeUpdated.get().getGrossSalary()
                 + ". After taxes and deductions his net salary becomes: " + toBeUpdated.get().getNetSalary();
 
+    }
+
+    public ArrayList<EmployeeDto> getEmployeesUnderManager(Integer employeeId) throws Exception {
+        Optional<Employee> manager = employeeRepository.findById(employeeId);
+        if(!manager.isPresent())
+            throw new Exception("This manager does not exist!");
+        //System.out.println("Manager found! " + manager.get().getManagedEmployees());
+        List<Employee> managedEmployees = manager.get().getManagedEmployees();
+        ArrayList<EmployeeDto> result = new ArrayList<EmployeeDto>();
+        for(int i = 0 ; i < managedEmployees.size(); i++){
+            result.add(new EmployeeDto(managedEmployees.get(i)));
+
+        }
+        return result;
     }
 
 //        } //modification beygeely employee object

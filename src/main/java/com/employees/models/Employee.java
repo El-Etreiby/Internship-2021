@@ -44,7 +44,7 @@ public class Employee {
     public void setGrossSalary(Double grossSalary) {
         this.grossSalary = grossSalary;
         this.setNetSalary();
-        System.out.println("Net salary updated: " + this.netSalary + " -------------------");
+        //System.out.println("Net salary updated: " + this.netSalary + " -------------------");
 
     }
 
@@ -73,7 +73,7 @@ public class Employee {
         if(this.grossSalary!=null)
         this.netSalary = this.grossSalary*0.85-500;
 
-        System.out.println("Net salary updated: " + this.netSalary + " -------------------");
+       // System.out.println("Net salary updated1: " + this.netSalary + " -------------------");
     }
 
 //    public void setNetSalary(Double netSalary) {

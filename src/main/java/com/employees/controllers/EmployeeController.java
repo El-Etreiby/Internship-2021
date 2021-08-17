@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController // This means that this class is a Controller
@@ -106,10 +107,25 @@ public class EmployeeController {
     @ResponseBody
     public String getEmployeeSalary(@PathVariable String employeeId) throws Exception {
         Integer intEmployeeId = Integer.parseInt(employeeId);
-        String result = employeeService.getEmployeeSalary(intEmployeeId).toString();
+        String result = employeeService.getEmployeeSalary(intEmployeeId);
         System.out.println(result);
         return result;
     }
+
+    @GetMapping(path = "/{employeeId}/manager") //gets employees managed by "employeeId"
+    @ResponseBody
+    public ArrayList<String> getEmployeesUnderManager(@PathVariable String employeeId) throws Exception {
+
+        List<EmployeeDto> dtos = employeeService.getEmployeesUnderManager(Integer.parseInt(employeeId));
+        ArrayList<String> result = new ArrayList<String>();
+        for(int i = 0; i < dtos.size(); i++){
+            result.add(dtos.get(i).toString());
+        }
+        System.out.println(result);
+        return result;
+
+    }
+
 
 //    @DeleteMapping(path = "/team/{id}") // Map ONLY POST Requests
 //    @ResponseBody
