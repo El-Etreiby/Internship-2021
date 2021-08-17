@@ -36,15 +36,15 @@ public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
     @Query("update Employee e set e.employeeName = :employeeName where e.employeeId = :parseInt")
     void updateEmployeeName(int parseInt, String employeeName);
 
-    @Transactional
-    @Modifying
-    @Query("update Employee e set e.department = :department where e.employeeId = :parseInt")
-    void updateEmployeeDepartment(int parseInt, Department department);
+//    @Transactional
+//    @Modifying
+//    @Query("update Employee e set e.department = :department where e.employeeId = :parseInt")
+//    void updateEmployeeDepartment(int parseInt, Department department);
 
-    @Transactional
-    @Modifying
-    @Query("update Employee e set e.employeeTeam = :employeeTeam where e.employeeId = :parseInt")
-    void updateEmployeeTeam(int parseInt, Team employeeTeam);
+//    @Transactional
+//    @Modifying
+//    @Query("update Employee e set e.employeeTeam = :employeeTeam where e.employeeId = :parseInt")
+//    void updateEmployeeTeam(int parseInt, Team employeeTeam);
 
     @Transactional
     @Modifying
@@ -74,8 +74,20 @@ public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
     void updateEmployeeManager(int parseInt, Employee manager);
 
 
+//    @Transactional
+//    @Modifying
+//    @Query("update Employee e set e.managedEmployees = :managedEmployees where e.employeeId = :parseInt")
+//    void updateEmployeeManagedEmployees(int parseInt, List<Employee> managedEmployees);
+
     @Transactional
     @Modifying
-    @Query("update Employee e set e.managedEmployees = :managedEmployees where e.employeeId = :parseInt")
-    void updateEmployeeManagedEmployees(int parseInt, List<Employee> managedEmployees);
+    @Query("update Employee e set e.netSalary = :netSalary where e.employeeId = :parseInt")
+
+    void updateEmployeeNetSalary(int parseInt, Double netSalary);
+
+    @Transactional
+    @Modifying
+    @Query("update Employee e set e.manager = null where e.employeeId = :employeeId")
+
+    void removeEmployeesManager(int employeeId);
 }

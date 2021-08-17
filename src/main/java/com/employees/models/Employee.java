@@ -1,5 +1,7 @@
 package com.employees.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +30,7 @@ public class Employee {
 
     @OneToMany(mappedBy = "manager",
     cascade = CascadeType.ALL)
+   // @JsonIgnore
     private List<Employee> managedEmployees;
 
     @ManyToOne
@@ -40,6 +43,9 @@ public class Employee {
 
     public void setGrossSalary(Double grossSalary) {
         this.grossSalary = grossSalary;
+        this.setNetSalary();
+        System.out.println("Net salary updated: " + this.netSalary + " -------------------");
+
     }
 
     public Integer getEmployeeId() {
@@ -65,12 +71,16 @@ public class Employee {
     public void setNetSalary(){
         if(this.grossSalary!=null)
         this.netSalary = this.grossSalary*0.85-500;
+
+        System.out.println("Net salary updated: " + this.netSalary + " -------------------");
     }
 
-    public void setNetSalary(Double netSalary) {
-        if(this.grossSalary!=null)
-            this.netSalary = this.grossSalary*0.85-500;
-    }
+//    public void setNetSalary(Double netSalary) {
+//        if(this.grossSalary!=null)
+//            this.netSalary = this.grossSalary*0.85-500;
+//
+//        System.out.println("Net salary updated: " + this.netSalary + " -------------------");
+//    }
 
     public List<Employee> getManagedEmployees() {
         return managedEmployees;

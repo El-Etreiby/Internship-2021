@@ -5,6 +5,7 @@ import com.employees.commands.AddingEmployeeToTeamCommand;
 import com.employees.commands.AddingManagerToEmployeeCommand;
 import com.employees.models.Department;
 import com.employees.models.Employee;
+import com.employees.models.Team;
 import com.employees.repositories.DepartmentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,6 @@ public class EmployeeTests {
         newEmployee.setGrossSalary(10000.0);
         newEmployee.setDob(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2000"));
         newEmployee.setGraduationDate(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2018"));
-        newEmployee.setNetSalary(9000.0);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/employee/")
@@ -115,11 +115,12 @@ public class EmployeeTests {
     }
 
     @Test
-    public void test_modify_employee() throws Exception {
+    public void test_modify_employee() throws Exception { //doesnt handle updating manager, team or department
         Employee modifiedEmployee = new Employee();
-        modifiedEmployee.setEmployeeName("ssssss");
-        modifiedEmployee.setGender('l');
+//        modifiedEmployee.setEmployeeName("SsSsS");
+//        modifiedEmployee.setGender('F');
         modifiedEmployee.setGrossSalary(1313.13);
+        modifiedEmployee.setNetSalary();
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/employee/14")
@@ -127,5 +128,13 @@ public class EmployeeTests {
                         .content(objectMapper.writeValueAsString(modifiedEmployee)))
                 .andExpect(status().isOk());
     }
-
+    @Test
+    public void test_get_employee_by_id() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/employee/14")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+//at2aked ezay en el entities fe3lan related f java?????
 }

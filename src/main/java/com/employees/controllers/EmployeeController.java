@@ -1,11 +1,12 @@
 package com.employees.controllers;
 
+import com.employees.DTOs.EmployeeDto;
 import com.employees.models.Employee;
 import com.employees.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.Optional;
 
 @RestController // This means that this class is a Controller
 @RequestMapping(path = "/employee") // This means URL's start with /demo (after Application path)
@@ -37,6 +38,12 @@ public class EmployeeController {
         employeeService.removeEmployee(Integer.parseInt(id));
         return "Employee Removed!";
     }
+    @DeleteMapping(path = "/{id}/manager") // Map ONLY POST Requests
+    @ResponseBody //search
+    public String removeEmployeesManager(@PathVariable String id) throws Exception {
+        employeeService.removeEmployeesManager(Integer.parseInt(id));
+        return "Employee's manager Removed!";
+    }
 
     @PostMapping(path = "/{employeeId}/team/{teamId}") // Map ONLY POST Requests
     @ResponseBody
@@ -61,6 +68,14 @@ public class EmployeeController {
         Integer intManagerId = Integer.parseInt(managerId);
         employeeService.addManagerToEmployee(intEmployeeId,intManagerId);
         return "Manager added to employee!";
+    }
+    @GetMapping(path = "/{employeeId}") //
+    @ResponseBody
+    public String getEmployee(@PathVariable String employeeId) throws Exception {
+        Integer intEmployeeId = Integer.parseInt(employeeId);
+        String result = employeeService.getEmployee(intEmployeeId).toString();
+        System.out.println(result);
+        return result;
     }
 //    @DeleteMapping(path = "/team/{id}") // Map ONLY POST Requests
 //    @ResponseBody

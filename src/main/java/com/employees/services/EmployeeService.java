@@ -1,5 +1,6 @@
 package com.employees.services;
 
+import com.employees.DTOs.EmployeeDto;
 import com.employees.models.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,12 +74,12 @@ public class EmployeeService {
         if(employee.getEmployeeName()!=null){
             employeeRepository.updateEmployeeName(Integer.parseInt(employeeId),employee.getEmployeeName());
         }
-        if(employee.getDepartment()!=null){
-            employeeRepository.updateEmployeeDepartment(Integer.parseInt(employeeId),employee.getDepartment());
-        }
-        if(employee.getEmployeeTeam()!=null){
-            employeeRepository.updateEmployeeTeam(Integer.parseInt(employeeId),employee.getEmployeeTeam());
-        }
+//        if(employee.getDepartment()!=null){
+//            employeeRepository.updateEmployeeDepartment(Integer.parseInt(employeeId),employee.getDepartment());
+//        }
+//        if(employee.getEmployeeTeam()!=null){
+//            employeeRepository.updateEmployeeTeam(Integer.parseInt(employeeId),employee.getEmployeeTeam());
+//        }
         if(employee.getDob()!=null){
             employeeRepository.updateEmployeeDob(Integer.parseInt(employeeId),employee.getDob());
         }
@@ -91,13 +92,32 @@ public class EmployeeService {
         if(employee.getGrossSalary()!=null){
             employeeRepository.updateEmployeeGrossSalary(Integer.parseInt(employeeId),employee.getGrossSalary());
         }
-        if(employee.getManager()!=null){
-            employeeRepository.updateEmployeeManager(Integer.parseInt(employeeId),employee.getManager());
+        if(employee.getNetSalary()!=null){
+            employeeRepository.updateEmployeeNetSalary(Integer.parseInt(employeeId),employee.getNetSalary());
         }
-        if(employee.getManagedEmployees()!=null){
-            employeeRepository.updateEmployeeManagedEmployees(Integer.parseInt(employeeId),employee.getManagedEmployees());
-        }
+//        if(employee.getManager()!=null){
+//            employeeRepository.updateEmployeeManager(Integer.parseInt(employeeId),employee.getManager());
+//        }
+//        if(employee.getManagedEmployees()!=null){
+//            employeeRepository.updateEmployeeManagedEmployees(Integer.parseInt(employeeId),employee.getManagedEmployees());
+//        }
 
+
+    }
+
+    public EmployeeDto getEmployee(Integer employeeId) throws Exception {
+       Optional<Employee> tuple = employeeRepository.findById(employeeId);
+       if(!tuple.isPresent())
+           throw new Exception("this employee does not exist!");
+       return new EmployeeDto(tuple.get());
+
+    }
+
+    public void removeEmployeesManager(int employeeId) throws Exception {
+        Optional<Employee> toBeUpdated = employeeRepository.findById(employeeId);
+        if(!toBeUpdated.isPresent())
+            throw new Exception("This employee does not exist!");
+        employeeRepository.removeEmployeesManager(employeeId);
 
     }
 
