@@ -17,7 +17,7 @@ public class EmployeeServiceTest {
     private EmployeeService employeeService;
 
     @Test
-    public void test_add_new_employee(){
+    public void test_add_new_employee() throws Exception {
           // arrange
         Employee newEmployee = new Employee();
         newEmployee.setGender('F');

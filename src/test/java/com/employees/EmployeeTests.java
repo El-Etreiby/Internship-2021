@@ -7,6 +7,8 @@ import com.employees.models.Department;
 import com.employees.models.Employee;
 import com.employees.models.Team;
 import com.employees.repositories.DepartmentRepository;
+import com.employees.repositories.EmployeeRepository;
+import com.employees.repositories.TeamRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -34,8 +36,14 @@ public class EmployeeTests {
     @Autowired
     private MockMvc mockMvc;
 
-//    @Autowired
-//    DepartmentRepository departmentRepository;
+    @Autowired
+    DepartmentRepository departmentRepository;
+
+    @Autowired
+    EmployeeRepository employeeRepository;
+
+    @Autowired
+    TeamRepository teamRepository;
 
     @Test
     public void test_employee_creation_and_insertion() throws Exception {
@@ -71,7 +79,7 @@ public class EmployeeTests {
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/employee/7")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(7)))
+                        .content(objectMapper.writeValueAsString(9)))
                 .andExpect(status().isOk());
     }
 
@@ -116,12 +124,15 @@ public class EmployeeTests {
     }
 
     @Test
-    public void test_modify_employee() throws Exception { //doesnt handle updating manager, team or department
+    public void test_modify_employee() throws Exception {
         Employee modifiedEmployee = new Employee();
 //        modifiedEmployee.setEmployeeName("SsSsS");
 //        modifiedEmployee.setGender('F');
         modifiedEmployee.setGrossSalary(1313.13);
-        modifiedEmployee.setNetSalary();
+        Employee manager = new Employee();
+        manager.setEmployeeName("MAN");
+        employeeRepository.save(manager);
+        modifiedEmployee.setManager(manager);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/employee/14")
@@ -189,7 +200,16 @@ public class EmployeeTests {
     public void test_get_employees_under_manager() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/manager/14")
+                        .get("/employee/manager/20")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void test_get_all_employees_under_manager() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/employee/manager/20/all")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

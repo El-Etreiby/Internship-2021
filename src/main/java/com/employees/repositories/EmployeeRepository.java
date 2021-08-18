@@ -36,15 +36,15 @@ public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
     @Query("update Employee e set e.employeeName = :employeeName where e.employeeId = :parseInt")
     void updateEmployeeName(int parseInt, String employeeName);
 
-//    @Transactional
-//    @Modifying
-//    @Query("update Employee e set e.department = :department where e.employeeId = :parseInt")
-//    void updateEmployeeDepartment(int parseInt, Department department);
+    @Transactional
+    @Modifying
+    @Query("update Employee e set e.department.departmentId = :department where e.employeeId = :parseInt")
+    void updateEmployeeDepartment(int parseInt, Integer department);
 
-//    @Transactional
-//    @Modifying
-//    @Query("update Employee e set e.employeeTeam = :employeeTeam where e.employeeId = :parseInt")
-//    void updateEmployeeTeam(int parseInt, Team employeeTeam);
+    @Transactional
+    @Modifying
+    @Query("update Employee e set e.employeeTeam.teamId = :employeeTeam where e.employeeId = :parseInt")
+    void updateEmployeeTeam(int parseInt, Integer employeeTeam);
 
     @Transactional
     @Modifying
@@ -70,19 +70,28 @@ public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
 
     @Transactional
     @Modifying
-    @Query("update Employee e set e.manager = :manager where e.employeeId = :parseInt")
-    void updateEmployeeManager(int parseInt, Employee manager);
+    @Query("update Employee e set e.manager.employeeId = :manager where e.employeeId = :parseInt")
+    void updateEmployeeManager(int parseInt, Integer manager);
 
-
-//    @Transactional
-//    @Modifying
-//    @Query("update Employee e set e.managedEmployees = :managedEmployees where e.employeeId = :parseInt")
-//    void updateEmployeeManagedEmployees(int parseInt, List<Employee> managedEmployees);
 
     @Transactional
     @Modifying
     @Query("update Employee e set e.netSalary = :netSalary where e.employeeId = :parseInt")
     void updateEmployeeNetSalary(int parseInt, Double netSalary);
+
+    @Transactional
+    @Query(value="with recursive cte (employee_id, employee_name, manager_id, dob, gender, graduation_date, gross_salary, net_salary, department_id, team_id) as (\n" +
+            "    select     employee.employee_id, employee.employee_name, employee.manager_id, employee.dob, employee.gender, employee.graduation_date, employee.gross_salary, employee.net_salary, employee.department_id, employee.team_id\n" +
+            "    from       employee\n" +
+            "    where      manager_id = :managerIdParam\n" +
+            "    union all\n" +
+            "    select     e.employee_id, e.employee_name, e.manager_id, e.dob, e.gender, e.graduation_date, e.gross_salary, e.net_salary, e.department_id, e.team_id\n" +
+            "    from       employee e\n" +
+            "                   inner join cte\n" +
+            "                              on e.manager_id = cte.employee_id\n" +
+            ")\n" +
+            "select * from cte;",nativeQuery = true)
+    List<Employee> getAllManagedEmployees(int managerIdParam);
 
     @Transactional
     @Modifying

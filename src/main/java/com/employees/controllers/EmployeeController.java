@@ -20,7 +20,7 @@ public class EmployeeController {
 
     @PostMapping(path = "/") // Map ONLY POST Requests
     @ResponseBody //search
-    public String addNewEmployee(@RequestBody Employee employee)
+    public String addNewEmployee(@RequestBody Employee employee) throws Exception
     // @RequestParam means it is a parameter from the GET or POST request
     {
         employeeService.addNewEmployee(employee);
@@ -112,11 +112,11 @@ public class EmployeeController {
         return result;
     }
 
-    @GetMapping(path = "/manager/{employeeId}") //gets employees managed by "employeeId"
+    @GetMapping(path = "/manager/{managerId}") //gets employees managed by "employeeId"
     @ResponseBody
-    public ArrayList<String> getEmployeesUnderManager(@PathVariable String employeeId) throws Exception {
+    public ArrayList<String> getEmployeesUnderManager(@PathVariable String managerId) throws Exception {
 
-        List<EmployeeDto> dtos = employeeService.getEmployeesUnderManager(Integer.parseInt(employeeId));
+        List<EmployeeDto> dtos = employeeService.getEmployeesUnderManager(Integer.parseInt(managerId));
         ArrayList<String> result = new ArrayList<String>();
         for(int i = 0; i < dtos.size(); i++){
             result.add(dtos.get(i).toString());
@@ -125,6 +125,23 @@ public class EmployeeController {
         return result;
 
     }
+
+
+    @GetMapping(path = "/manager/{managerId}/all") //gets employees managed by "employeeId"
+    @ResponseBody
+    public ArrayList<String> getAllEmployeesUnderManager(@PathVariable String managerId) throws Exception {
+
+        List<EmployeeDto> dtos = employeeService.getAllEmployeesUnderManager(Integer.parseInt(managerId));
+        ArrayList<String> result = new ArrayList<String>();
+        for(int i = 0; i < dtos.size(); i++){
+            result.add(dtos.get(i).toString());
+        }
+        System.out.println(result);
+        return result;
+
+    }
+
+
     @GetMapping(path = "/team/{teamId}") //gets employees managed by "employeeId"
     @ResponseBody
     public ArrayList<String> getEmployeesInTeam(@PathVariable String teamId) throws Exception {
