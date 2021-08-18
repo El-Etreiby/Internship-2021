@@ -4,6 +4,7 @@ import com.employees.DTOs.EmployeeDto;
 import com.employees.models.Employee;
 import com.employees.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,15 +24,27 @@ public class EmployeeController {
     public String addNewEmployee(@RequestBody Employee employee) throws Exception
     // @RequestParam means it is a parameter from the GET or POST request
     {
+        employee.setNetSalary();
         employeeService.addNewEmployee(employee);
         return "Employee added successfully!";
     }
-    @PostMapping(path = "/{employeeId}") // Map ONLY POST Requests
+    @PutMapping (path = "/{employeeId}")
     @ResponseBody //search
     public String updateEmployee(@RequestBody Employee employee, @PathVariable String employeeId) throws Exception {
-        employeeService.updateEmployee(employeeId,employee);
-        return "Employee added successfully!";
+        EmployeeDto employeeDto = new EmployeeDto(employee);
+        System.out.println("EMP: " + employeeDto);
+        employeeService.updateEmployee(employeeId,employeeDto);
+        return "Employee modified successfully!";
     }
+
+//    @PostMapping (path = "/{employeeId}")
+//    @ResponseBody //search
+//    public String updateEmployee(@RequestBody Employee employee, @PathVariable String employeeId) throws Exception {
+//        System.out.println("UPDATING...ID: " + employeeId);
+//        System.out.println("New Employee: " + employee);
+//        employeeService.updateEmployee(employeeId,employee);
+//        return "Employee modified successfully!";
+//    }
 
     @DeleteMapping(path = "/{id}") // Map ONLY POST Requests
     @ResponseBody //search
@@ -83,7 +96,7 @@ public class EmployeeController {
         employeeService.addManagerToEmployee(intEmployeeId,intManagerId);
         return "Manager added to employee!";
     }
-    @GetMapping(path = "/{employeeId}") //
+    @GetMapping(path = "/{employeeId}")
     @ResponseBody
     public String getEmployee(@PathVariable String employeeId) throws Exception {
         Integer intEmployeeId = Integer.parseInt(employeeId);
@@ -147,6 +160,20 @@ public class EmployeeController {
     public ArrayList<String> getEmployeesInTeam(@PathVariable String teamId) throws Exception {
 
         List<EmployeeDto> dtos = employeeService.getEmployeesInTeam(Integer.parseInt(teamId));
+        ArrayList<String> result = new ArrayList<String>();
+        for(int i = 0; i < dtos.size(); i++){
+            result.add(dtos.get(i).toString());
+        }
+        System.out.println(result);
+        return result;
+
+    }
+
+    @GetMapping(path = "/department/{departmentId}") //gets employees managed by "employeeId"
+    @ResponseBody
+    public ArrayList<String> getEmployeesInDepartment (@PathVariable String departmentId) throws Exception {
+
+        List<EmployeeDto> dtos = employeeService.getEmployeesInDepartment(Integer.parseInt(departmentId));
         ArrayList<String> result = new ArrayList<String>();
         for(int i = 0; i < dtos.size(); i++){
             result.add(dtos.get(i).toString());

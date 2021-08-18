@@ -123,19 +123,24 @@ public class EmployeeTests {
                 .andExpect(status().isOk());
     }
 
+    //{
+    //    "manager": {"employeeId" : "15"}
+    //}
+
+
     @Test
     public void test_modify_employee() throws Exception {
         Employee modifiedEmployee = new Employee();
-//        modifiedEmployee.setEmployeeName("SsSsS");
+        modifiedEmployee.setEmployeeName("SsSsS");
 //        modifiedEmployee.setGender('F');
         modifiedEmployee.setGrossSalary(1313.13);
-        Employee manager = new Employee();
-        manager.setEmployeeName("MAN");
-        employeeRepository.save(manager);
-        modifiedEmployee.setManager(manager);
+//        Employee manager = new Employee();
+//        manager.setEmployeeName("MAN");
+//        employeeRepository.save(manager);
+//        modifiedEmployee.setManager(manager);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee/14")
+                        .put("/employee/14")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(modifiedEmployee)))
                 .andExpect(status().isOk());
@@ -189,9 +194,8 @@ public class EmployeeTests {
 
     @Test
     public void test_get_employee_salary() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/14/salary")
+                        .get("/employee/15/salary")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

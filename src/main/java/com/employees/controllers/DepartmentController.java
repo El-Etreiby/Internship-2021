@@ -12,16 +12,16 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
-    @PostMapping(path = "/add-new-department")
+    @PostMapping(path = "/")
     @ResponseBody
     public String addNewEmployee(@RequestBody Department department){
         departmentService.addNewDepartment(department);
         return "Department Saved!";
     }
-    @PostMapping(path = "/remove-department")
+    @DeleteMapping(path = "/{departmentId}")
     @ResponseBody
-    public String removeDepartment(@RequestBody Integer departmentToBeRemoved) throws Exception {
-        departmentService.removeDepartment(departmentToBeRemoved);
+    public String removeDepartment(@PathVariable String departmentId) throws Exception {
+        departmentService.removeDepartment(Integer.parseInt(departmentId));
         return "Department Removed!";
     }
 

@@ -20,6 +20,7 @@ public class Employee {
     private Date graduationDate;
     private Double grossSalary;
     private Double netSalary;
+    private String expertise;
 
     @ManyToOne
     @JoinColumn(name = "department_id")
@@ -149,6 +150,13 @@ public class Employee {
         this.employeeTeam = employeeTeam;
     }
 
+    public String getExpertise() {
+        return expertise;
+    }
+
+    public void setExpertise(String expertise) {
+        this.expertise = expertise;
+    }
 
     //    public Employee(Integer employeeId, Set<String> expertise, String department, String name, Date dob, char gender, Date graduationDate, Double grossSalary, Employee manager, ArrayList<Employee> managedEmployees, Team employeeTeam, Team managedTeam) {
 //        this.employeeId = employeeId;
@@ -167,11 +175,14 @@ public class Employee {
     }
     public String toString(){
         return "ID: " + this.employeeId + "\n"
+                + "Team ID:  " + this.employeeTeam.getTeamId() + "\n"
              + "Name: " + this.employeeName + "\n"
              + "DoB: " + this.dob + "\n"
              + "DoG: " + this.graduationDate + "\n"
              + "Gender: " + this.gender + "\n"
              + "Gross salary: " + this.grossSalary + "\n"
-             + "Net salary: "  + this.netSalary ;
+             + "Net salary: "  + this.netSalary + "\n"
+                + "Department ID: " + this.getDepartment().getDepartmentId() + "\n"
+                + "Manager ID: " + this.getManager().getEmployeeId();
     }
 }

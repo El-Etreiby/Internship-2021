@@ -29,27 +29,37 @@ public class EmployeeService {
     DepartmentRepository departmentRepository;
 
     public String addNewEmployee(Employee employee) throws Exception {
-        if(employee.getGender()!='M' ||employee.getGender()!='F' ||employee.getGender()!='m' ||employee.getGender()!='f')
+//        System.out.println("GENDER: " + "\n" + employee.getGender() + 1);
+//        System.out.println(employee);
+        if(employee.getGender()!='M' && employee.getGender()!='F' && employee.getGender()!='m' && employee.getGender()!='f')
             throw new Exception("an employee's gender can only be male (represented as 'M') or female (represented as 'F')");
         String name = employee.getEmployeeName();
         for(int i = 0 ; i < name.length(); i++)
             if(!name.matches("[a-zA-Z]+"))
                 throw new Exception("an employee's name should consist of only letters");
-
         employeeRepository.save(employee);
         return "Employee added successfully!";
     }
 
     public String removeEmployee(Integer employeeToBeRemoved) throws Exception {
         Optional<Employee> toBeRemoved = employeeRepository.findById(employeeToBeRemoved);
-        if (toBeRemoved.isPresent()) {
+        if (!toBeRemoved.isPresent()) {
+            throw new Exception("You're trying to delete a non existing employee");
+        }
+        if(toBeRemoved.get().getManagedEmployees().isEmpty()) {
             employeeRepository.deleteById(employeeToBeRemoved);
             return "Employee deleted successfully!";
         }
-        else
-            throw new Exception("You're trying to delete a non existing employee");
-
-
+        else if(toBeRemoved.get().getManager()==null)
+            throw new Exception("You can't delete a top manager!");
+            else{
+                List<Employee> managedEmployees = toBeRemoved.get().getManagedEmployees();
+                Employee newManager = toBeRemoved.get().getManager();
+            for(int i = 0 ; i < managedEmployees.size(); i++){
+                employeeRepository.updateEmployeeManager(managedEmployees.get(i).getEmployeeId(),newManager.getEmployeeId());
+            }
+            return "Employee deleted successfully!";
+        }
     }
 
     public static <T> Iterable<T>
@@ -98,29 +108,34 @@ public class EmployeeService {
         employeeRepository.addManagerToEmployee(employeeId,managerId);
     }
 
-    public void updateEmployee(String employeeId, Employee employee) throws Exception {
+    public void updateEmployee(String employeeId, EmployeeDto employee) throws Exception {
+        System.out.println("updating in service! EMPLOYEE: " + employee);
         Optional<Employee> toBeUpdated = employeeRepository.findById(Integer.parseInt(employeeId));
         if (!toBeUpdated.isPresent()) {
             throw new Exception("This employee does not exist");
         }
+
+        if(employee.getExpertise()!=null)
+            employeeRepository.updateEmployeeExpertise(Integer.parseInt(employeeId),employee.getExpertise());
         if(employee.getEmployeeName()!=null){
             employeeRepository.updateEmployeeName(Integer.parseInt(employeeId),employee.getEmployeeName());
         }
-        if(employee.getDepartment()!=null){
-            if(!departmentRepository.findById(employee.getDepartment().getDepartmentId()).isPresent())
+        if(employee.getDepartmentId()!=null){
+            if(!departmentRepository.findById(employee.getDepartmentId()).isPresent())
                 throw new Exception("You must enter a department that exists in the database. If you want to add this employee to this department insert the department in the database first!");
-                employeeRepository.updateEmployeeDepartment(Integer.parseInt(employeeId),employee.getDepartment().getDepartmentId());
+                employeeRepository.updateEmployeeDepartment(Integer.parseInt(employeeId),employee.getDepartmentId());
         }  //handle modifying and inserting non existing departments, tyeams or managers
-        if(employee.getEmployeeTeam()!=null){
-            if(!teamRepository.findById(employee.getEmployeeTeam().getTeamId()).isPresent())
+        if(employee.getTeamId()!=null){
+            if(!teamRepository.findById(employee.getTeamId()).isPresent())
                 throw new Exception("You must enter a team that exists in the database. If you want to add this employee to this team insert the team in the database first!");
-
-            employeeRepository.updateEmployeeTeam(Integer.parseInt(employeeId),employee.getEmployeeTeam().getTeamId());
+            System.out.println("updating team..." );
+            System.out.println("new team id: " + employee.getTeamId());
+            employeeRepository.updateEmployeeTeam(Integer.parseInt(employeeId),employee.getTeamId());
         }
         if(employee.getDob()!=null){
             employeeRepository.updateEmployeeDob(Integer.parseInt(employeeId),employee.getDob());
         }
-        if(employee.getGender()=='M'||employee.getGender()=='F'){
+        if(employee.getGender()=='M'||employee.getGender()=='F' ||employee.getGender()=='f'||employee.getGender()=='m'){
             employeeRepository.updateEmployeeGender(Integer.parseInt(employeeId),employee.getGender());
         }
         if(employee.getGraduationDate()!=null){
@@ -132,11 +147,11 @@ public class EmployeeService {
         if(employee.getNetSalary()!=null){
             employeeRepository.updateEmployeeNetSalary(Integer.parseInt(employeeId),employee.getNetSalary());
         }
-        if(employee.getManager()!=null){
-            if(!employeeRepository.findById(employee.getManager().getEmployeeId()).isPresent())
+        if(employee.getManagerId()!=null){
+            if(!employeeRepository.findById(employee.getManagerId()).isPresent())
                 throw new Exception("You must enter a manager that exists in the database. If you want to add this manager to this employee insert the manager in the database first!");
 
-            employeeRepository.updateEmployeeManager(Integer.parseInt(employeeId),employee.getManager().getEmployeeId());
+            employeeRepository.updateEmployeeManager(Integer.parseInt(employeeId),employee.getManagerId());
         }
 //        if(employee.getManagedEmployees()!=null){
 //            employeeRepository.updateEmployeeManagedEmployees(Integer.parseInt(employeeId),employee.getManagedEmployees());
@@ -233,6 +248,20 @@ public class EmployeeService {
         ArrayList<EmployeeDto> result = new ArrayList<EmployeeDto>();
         for(int i = 0 ; i < managedEmployees.size(); i++){
             result.add(new EmployeeDto(managedEmployees.get(i)));
+        }
+        return result;
+    }
+
+    public List<EmployeeDto> getEmployeesInDepartment(int departmentId) throws Exception {
+        Optional<Department> department = departmentRepository.findById(departmentId);
+        if(!department.isPresent())
+            throw new Exception("This department does not exist!");
+        //System.out.println("Manager found! " + manager.get().getManagedEmployees());
+        List<Employee> teamEmployees = department.get().getDepartmentMembers();
+        ArrayList<EmployeeDto> result = new ArrayList<EmployeeDto>();
+        for(int i = 0 ; i < teamEmployees.size(); i++){
+            result.add(new EmployeeDto(teamEmployees.get(i)));
+
         }
         return result;
     }

@@ -25,6 +25,7 @@ public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
     @Modifying
     @Query("update Employee e set e.department.departmentId = :departmentId where e.employeeId = :employeeId")
     void addEmployeeToDepartment(Integer employeeId, Integer departmentId);
+
     @Transactional
     @Modifying
     @Query("update Employee e set e.manager.employeeId = :managerId where e.employeeId = :employeeId")
@@ -80,12 +81,12 @@ public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
     void updateEmployeeNetSalary(int parseInt, Double netSalary);
 
     @Transactional
-    @Query(value="with recursive cte (employee_id, employee_name, manager_id, dob, gender, graduation_date, gross_salary, net_salary, department_id, team_id) as (\n" +
-            "    select     employee.employee_id, employee.employee_name, employee.manager_id, employee.dob, employee.gender, employee.graduation_date, employee.gross_salary, employee.net_salary, employee.department_id, employee.team_id\n" +
+    @Query(value="with recursive cte (employee_id, employee_name, manager_id, dob, gender, graduation_date, gross_salary, net_salary, department_id, team_id, expertise) as (\n" +
+            "    select     employee.employee_id, employee.employee_name, employee.manager_id, employee.dob, employee.gender, employee.graduation_date, employee.gross_salary, employee.net_salary, employee.department_id, employee.team_id, employee.expertise\n" +
             "    from       employee\n" +
             "    where      manager_id = :managerIdParam\n" +
             "    union all\n" +
-            "    select     e.employee_id, e.employee_name, e.manager_id, e.dob, e.gender, e.graduation_date, e.gross_salary, e.net_salary, e.department_id, e.team_id\n" +
+            "    select     e.employee_id, e.employee_name, e.manager_id, e.dob, e.gender, e.graduation_date, e.gross_salary, e.net_salary, e.department_id, e.team_id, e.expertise\n" +
             "    from       employee e\n" +
             "                   inner join cte\n" +
             "                              on e.manager_id = cte.employee_id\n" +
@@ -108,5 +109,8 @@ public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
     @Query("update Employee e set e.department = null where e.employeeId = :employeeId")
     void removeEmployeesDepartment(int employeeId);
 
-
+    @Transactional
+    @Modifying
+    @Query("update Employee e set e.expertise = :expertise where e.employeeId = :parseInt")
+    void updateEmployeeExpertise(int parseInt, String expertise);
 }
