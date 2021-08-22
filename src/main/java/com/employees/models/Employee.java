@@ -72,9 +72,12 @@ public class Employee {
     }
 
     public void setNetSalary(){
+        Double taxRate = 0.85;
+        Double deductions = 500.0;
         if(this.grossSalary!=null)
-        this.netSalary = this.grossSalary*0.85-500;
-
+        this.netSalary = this.grossSalary*taxRate-deductions;
+            if(this.netSalary < 0.0)
+                this.netSalary = 0.0;
        // System.out.println("Net salary updated1: " + this.netSalary + " -------------------");
     }
 

@@ -77,9 +77,8 @@ public class EmployeeTests {
     public void test_delete_employee() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/employee/7")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(9)))
+                        .delete("/employee/26")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -117,7 +116,7 @@ public class EmployeeTests {
         command.setManagerId(14);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee/17/manager/14")
+                        .post("/employee/14/manager/17")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());
@@ -158,9 +157,8 @@ public class EmployeeTests {
     public void test_remove_manager_from_employee() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/employee/8/manager")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(8)))
+                        .delete("/employee/14/manager")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -168,18 +166,16 @@ public class EmployeeTests {
     public void test_remove_team_from_employee() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/employee/8/team")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(8)))
+                        .delete("/employee/14/team")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
     @Test
     public void test_remove_department_from_employee() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/employee/8/department")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(8)))
+                        .delete("/employee/14/department")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -213,7 +209,7 @@ public class EmployeeTests {
     public void test_get_all_employees_under_manager() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/manager/20/all")
+                        .get("/employee/manager/14/all")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

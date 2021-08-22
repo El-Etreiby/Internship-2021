@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ControllerAdvice
-public class RestErrorHandler extends ResponseEntityExceptionHandler {
-    @Override
+public class RestErrorHandler {
+
     protected ResponseEntity<Object> handleMissingServletRequestParameter(
             MissingServletRequestParameterException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
@@ -30,22 +30,41 @@ public class RestErrorHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<Object>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
-//    @ExceptionHandler({ ConstraintViolationException.class })
-//    public ResponseEntity<Object> handleConstraintViolation(
-//            ConstraintViolationException ex, WebRequest request) {
+    @ExceptionHandler({ EmployeeNotFoundException.class })
+    public ResponseEntity<Object> handleEmployeeNotFound(
+            EmployeeNotFoundException ex, WebRequest request) {
 //        List<String> errors = new ArrayList<String>();
-//        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+//        for (EmployeeNotFoundException<?> violation : ex.getConstraintViolations()) {
 //            errors.add(violation.getRootBeanClass().getName() + " " +
 //                    violation.getPropertyPath() + ": " + violation.getMessage());
 //        }
-//
-//        ApiError apiError =
-//                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
-//        return new ResponseEntity<Object>(
-//                apiError, new HttpHeaders(), apiError.getStatus());
-//    }
 
-    @Override
+        ApiError apiError =
+                new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
+        return new ResponseEntity<Object>(
+                apiError, new HttpHeaders(), apiError.getStatus());
+    }
+    @ExceptionHandler({ DepartmentNotFoundException.class })
+    public ResponseEntity<Object> handleDepartmentNotFound(
+            DepartmentNotFoundException ex, WebRequest request) {
+        ApiError apiError =
+                new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
+        return new ResponseEntity<Object>(
+                apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({ TeamNotFoundException.class })
+    public ResponseEntity<Object> handleTeamNotFound(
+            TeamNotFoundException ex, WebRequest request) {
+        ApiError apiError =
+                new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
+        return new ResponseEntity<Object>(
+                apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+
+
+
     protected ResponseEntity<Object> handleNoHandlerFoundException(
             NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String error = "No handler found for " + ex.getHttpMethod() + " " + ex.getRequestURL();
@@ -55,7 +74,6 @@ public class RestErrorHandler extends ResponseEntityExceptionHandler {
 
     }
 
-    @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
             HttpRequestMethodNotSupportedException ex,
             HttpHeaders headers,
@@ -73,7 +91,6 @@ public class RestErrorHandler extends ResponseEntityExceptionHandler {
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
             HttpMediaTypeNotSupportedException ex,
             HttpHeaders headers,
