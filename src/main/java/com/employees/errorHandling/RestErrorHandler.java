@@ -1,7 +1,6 @@
 package com.employees.errorHandling;
 
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +11,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @ControllerAdvice
 public class RestErrorHandler {
@@ -26,22 +21,16 @@ public class RestErrorHandler {
         String error = ex.getParameterName() + " parameter is missing";
 
         ApiError apiError =
-                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
-        return new ResponseEntity<Object>(
+                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
+        return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
     @ExceptionHandler({ EmployeeNotFoundException.class })
     public ResponseEntity<Object> handleEmployeeNotFound(
             EmployeeNotFoundException ex, WebRequest request) {
-//        List<String> errors = new ArrayList<String>();
-//        for (EmployeeNotFoundException<?> violation : ex.getConstraintViolations()) {
-//            errors.add(violation.getRootBeanClass().getName() + " " +
-//                    violation.getPropertyPath() + ": " + violation.getMessage());
-//        }
-
         ApiError apiError =
                 new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
-        return new ResponseEntity<Object>(
+        return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
     @ExceptionHandler({ DepartmentNotFoundException.class })
@@ -49,7 +38,7 @@ public class RestErrorHandler {
             DepartmentNotFoundException ex, WebRequest request) {
         ApiError apiError =
                 new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
-        return new ResponseEntity<Object>(
+        return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -58,7 +47,7 @@ public class RestErrorHandler {
             TeamNotFoundException ex, WebRequest request) {
         ApiError apiError =
                 new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
-        return new ResponseEntity<Object>(
+        return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -67,10 +56,8 @@ public class RestErrorHandler {
 
     protected ResponseEntity<Object> handleNoHandlerFoundException(
             NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        String error = "No handler found for " + ex.getHttpMethod() + " " + ex.getRequestURL();
-
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), error);
-        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
 
     }
 
@@ -86,8 +73,8 @@ public class RestErrorHandler {
         ex.getSupportedHttpMethods().forEach(t -> builder.append(t + " "));
 
         ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED,
-                ex.getLocalizedMessage(), builder.toString());
-        return new ResponseEntity<Object>(
+                ex.getLocalizedMessage());
+        return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -102,8 +89,8 @@ public class RestErrorHandler {
         ex.getSupportedMediaTypes().forEach(t -> builder.append(t + ", "));
 
         ApiError apiError = new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
-                ex.getLocalizedMessage(), builder.substring(0, builder.length() - 2));
-        return new ResponseEntity<Object>(
+                ex.getLocalizedMessage());
+        return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -112,8 +99,8 @@ public class RestErrorHandler {
     @ExceptionHandler({ Exception.class })
     public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
         ApiError apiError = new ApiError(
-                HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
-        return new ResponseEntity<Object>(
+                HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage());
+        return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
     }

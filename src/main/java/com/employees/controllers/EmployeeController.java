@@ -4,12 +4,10 @@ import com.employees.DTOs.EmployeeDto;
 import com.employees.models.Employee;
 import com.employees.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController // This means that this class is a Controller
 @RequestMapping(path = "/employee") // This means URL's start with /demo (after Application path)
@@ -19,7 +17,7 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
 
-    @PostMapping(path = "/") // Map ONLY POST Requests
+    @PostMapping(path = "") // Map ONLY POST Requests
     @ResponseBody //search
     public String addNewEmployee(@RequestBody Employee employee) throws Exception
     // @RequestParam means it is a parameter from the GET or POST request
@@ -36,15 +34,6 @@ public class EmployeeController {
         employeeService.updateEmployee(employeeId,employeeDto);
         return "Employee modified successfully!";
     }
-
-//    @PostMapping (path = "/{employeeId}")
-//    @ResponseBody //search
-//    public String updateEmployee(@RequestBody Employee employee, @PathVariable String employeeId) throws Exception {
-//        System.out.println("UPDATING...ID: " + employeeId);
-//        System.out.println("New Employee: " + employee);
-//        employeeService.updateEmployee(employeeId,employee);
-//        return "Employee modified successfully!";
-//    }
 
     @DeleteMapping(path = "/{id}") // Map ONLY POST Requests
     @ResponseBody //search
@@ -108,12 +97,7 @@ public class EmployeeController {
     @ResponseBody
     public ArrayList<String> getAllEmployees() throws Exception {
         ArrayList<EmployeeDto> dtos = employeeService.getAllEmployees();
-        ArrayList<String> result = new ArrayList<String>();
-        for(int i = 0; i < dtos.size(); i++){
-            result.add(dtos.get(i).toString());
-        }
-        System.out.println(result);
-        return result;
+        return this.addDtosToArrayList(dtos);
     }
 
     @GetMapping(path = "/{employeeId}/salary") //
@@ -130,13 +114,7 @@ public class EmployeeController {
     public ArrayList<String> getEmployeesUnderManager(@PathVariable String managerId) throws Exception {
 
         List<EmployeeDto> dtos = employeeService.getEmployeesUnderManager(Integer.parseInt(managerId));
-        ArrayList<String> result = new ArrayList<String>();
-        for(int i = 0; i < dtos.size(); i++){
-            result.add(dtos.get(i).toString());
-        }
-        System.out.println(result);
-        return result;
-
+        return this.addDtosToArrayList(dtos);
     }
 
 
@@ -145,13 +123,7 @@ public class EmployeeController {
     public ArrayList<String> getAllEmployeesUnderManager(@PathVariable String managerId) throws Exception {
 
         List<EmployeeDto> dtos = employeeService.getAllEmployeesUnderManager(Integer.parseInt(managerId));
-        ArrayList<String> result = new ArrayList<String>();
-        for(int i = 0; i < dtos.size(); i++){
-            result.add(dtos.get(i).toString());
-        }
-        System.out.println(result);
-        return result;
-
+        return this.addDtosToArrayList(dtos);
     }
 
 
@@ -160,27 +132,22 @@ public class EmployeeController {
     public ArrayList<String> getEmployeesInTeam(@PathVariable String teamId) throws Exception {
 
         List<EmployeeDto> dtos = employeeService.getEmployeesInTeam(Integer.parseInt(teamId));
-        ArrayList<String> result = new ArrayList<String>();
-        for(int i = 0; i < dtos.size(); i++){
-            result.add(dtos.get(i).toString());
-        }
-        System.out.println(result);
-        return result;
-
+        return this.addDtosToArrayList(dtos);
     }
 
     @GetMapping(path = "/department/{departmentId}") //gets employees managed by "employeeId"
     @ResponseBody
     public ArrayList<String> getEmployeesInDepartment (@PathVariable String departmentId) throws Exception {
-
         List<EmployeeDto> dtos = employeeService.getEmployeesInDepartment(Integer.parseInt(departmentId));
+        return this.addDtosToArrayList(dtos);
+    }
+
+    private ArrayList<String> addDtosToArrayList(List<EmployeeDto> dtos){
         ArrayList<String> result = new ArrayList<String>();
         for(int i = 0; i < dtos.size(); i++){
             result.add(dtos.get(i).toString());
         }
-        System.out.println(result);
         return result;
-
     }
 
 

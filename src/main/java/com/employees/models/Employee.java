@@ -1,7 +1,5 @@
 package com.employees.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -54,14 +52,6 @@ public class Employee {
         return employeeId;
     }
 
-//    public Set<String> getExpertise() {
-//        return expertise;
-//    }
-//
-//    public void setExpertise(Set<String> expertise) {
-//        this.expertise = expertise;
-//    }
-
     public void setEmployeeId(Integer employeeId) {
         this.employeeId = employeeId;
     }
@@ -78,15 +68,8 @@ public class Employee {
         this.netSalary = this.grossSalary*taxRate-deductions;
             if(this.netSalary < 0.0)
                 this.netSalary = 0.0;
-       // System.out.println("Net salary updated1: " + this.netSalary + " -------------------");
     }
 
-//    public void setNetSalary(Double netSalary) {
-//        if(this.grossSalary!=null)
-//            this.netSalary = this.grossSalary*0.85-500;
-//
-//        System.out.println("Net salary updated: " + this.netSalary + " -------------------");
-//    }
 
     public List<Employee> getManagedEmployees() {
         return managedEmployees;
@@ -161,18 +144,6 @@ public class Employee {
         this.expertise = expertise;
     }
 
-    //    public Employee(Integer employeeId, Set<String> expertise, String department, String name, Date dob, char gender, Date graduationDate, Double grossSalary, Employee manager, ArrayList<Employee> managedEmployees, Team employeeTeam, Team managedTeam) {
-//        this.employeeId = employeeId;
-//        this.expertise = expertise;
-//        this.department = department;
-//        this.name = name;
-//        this.dob = dob;
-//        this.gender = gender;
-//        this.graduationDate = graduationDate;
-//        this.grossSalary = grossSalary;
-//        this.employeeTeam = employeeTeam;
-//        this.managedTeam = managedTeam;
-//    }
     public Employee() {
 
     }

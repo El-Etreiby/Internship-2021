@@ -3,24 +3,21 @@ package com.employees;
 import com.employees.commands.AddingEmployeeToDepartmentCommand;
 import com.employees.commands.AddingEmployeeToTeamCommand;
 import com.employees.commands.AddingManagerToEmployeeCommand;
-import com.employees.models.Department;
 import com.employees.models.Employee;
-import com.employees.models.Team;
 import com.employees.repositories.DepartmentRepository;
 import com.employees.repositories.EmployeeRepository;
 import com.employees.repositories.TeamRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class EmployeeTests {
 
     @Autowired
@@ -56,23 +54,12 @@ public class EmployeeTests {
         newEmployee.setGraduationDate(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2018"));
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee/")
+                        .post("/employee")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newEmployee)))
                 .andExpect(status().isOk());
 
-
-        //        // arrange
-//        EmployeeController controller = new EmployeeController();
-//        // act
-//        Set<String> expertise = new HashSet();
-//        expertise.add("web development");
-//        expertise.add("backend");
-//        String response =  controller.addNewEmployee("Ahmed",'M',new SimpleDateFormat("mm/dd/yyyy").parse("1/1/2000"),expertise,new SimpleDateFormat("mm/dd/yyyy").parse("1/1/2018"),10000.0,"web development");
-//        // assert
-//        assertEquals("Employee Saved!",response);
     }
-   // @Transactional
     @Test
     public void test_delete_employee() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -143,6 +130,7 @@ public class EmployeeTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(modifiedEmployee)))
                 .andExpect(status().isOk());
+
     }
     @Test
     public void test_get_employee_by_id() throws Exception {
