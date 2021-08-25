@@ -14,7 +14,8 @@ public class Department {
 
     @OneToMany(
             mappedBy="department",
-            cascade = CascadeType.ALL)
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
     private List<Employee> departmentMembers;
 
 

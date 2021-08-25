@@ -8,13 +8,14 @@ import javax.persistence.*;
 public class Team {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int teamId;
 
     private String teamName;
 
-    @OneToMany (mappedBy="employeeTeam",
-    cascade = CascadeType.ALL) //mappedBy = "fk attribute in other table name"
+    @OneToMany(mappedBy = "employeeTeam",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER) //mappedBy = "fk attribute in other table name"
     private List<Employee> teamMembers;
 
     public Integer getTeamId() {

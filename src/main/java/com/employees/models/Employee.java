@@ -33,8 +33,9 @@ public class Employee {
     private Team employeeTeam; //the team the employee belongs to
 
     @OneToMany(mappedBy = "manager",
-    cascade = CascadeType.ALL)
-   // @JsonIgnore
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
+    // @JsonIgnore
     private List<Employee> managedEmployees;
 
     @ManyToOne
@@ -65,13 +66,13 @@ public class Employee {
         return netSalary;
     }
 
-    public void setNetSalary(){
+    public void setNetSalary() {
         Double taxRate = 0.85;
         Double deductions = 500.0;
-        if(this.grossSalary!=null)
-        this.netSalary = this.grossSalary*taxRate-deductions;
-            if(this.netSalary < 0.0)
-                this.netSalary = 0.0;
+        if (this.grossSalary != null)
+            this.netSalary = this.grossSalary * taxRate - deductions;
+        if (this.netSalary < 0.0)
+            this.netSalary = 0.0;
     }
 
 
@@ -151,15 +152,16 @@ public class Employee {
     public Employee() {
 
     }
-    public String toString(){
+
+    public String toString() {
         return "ID: " + this.employeeId + "\n"
                 + "Team ID:  " + this.employeeTeam.getTeamId() + "\n"
-             + "Name: " + this.employeeName + "\n"
-             + "DoB: " + this.dob + "\n"
-             + "DoG: " + this.graduationDate + "\n"
-             + "Gender: " + this.gender + "\n"
-             + "Gross salary: " + this.grossSalary + "\n"
-             + "Net salary: "  + this.netSalary + "\n"
+                + "Name: " + this.employeeName + "\n"
+                + "DoB: " + this.dob + "\n"
+                + "DoG: " + this.graduationDate + "\n"
+                + "Gender: " + this.gender + "\n"
+                + "Gross salary: " + this.grossSalary + "\n"
+                + "Net salary: " + this.netSalary + "\n"
                 + "Department ID: " + this.getDepartment().getDepartmentId() + "\n"
                 + "Manager ID: " + this.getManager().getEmployeeId();
     }

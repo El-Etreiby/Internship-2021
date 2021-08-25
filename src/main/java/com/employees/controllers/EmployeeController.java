@@ -4,6 +4,7 @@ import com.employees.DTOs.EmployeeDto;
 import com.employees.models.Employee;
 import com.employees.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -27,10 +28,9 @@ public class EmployeeController {
         return "Employee added successfully!";
     }
     @PutMapping (path = "/{employeeId}")
-    @ResponseBody //search
+    @ResponseBody
     public String updateEmployee(@RequestBody Employee employee, @PathVariable String employeeId) throws Exception {
         EmployeeDto employeeDto = new EmployeeDto(employee);
-        System.out.println("EMP: " + employeeDto);
         employeeService.updateEmployee(employeeId,employeeDto);
         return "Employee modified successfully!";
     }
@@ -97,7 +97,9 @@ public class EmployeeController {
     @ResponseBody
     public ArrayList<String> getAllEmployees() throws Exception {
         ArrayList<EmployeeDto> dtos = employeeService.getAllEmployees();
-        return this.addDtosToArrayList(dtos);
+        ArrayList<String> result = this.addDtosToArrayList(dtos);
+        System.out.println(result);
+        return result;
     }
 
     @GetMapping(path = "/{employeeId}/salary") //
@@ -123,6 +125,7 @@ public class EmployeeController {
     public ArrayList<String> getAllEmployeesUnderManager(@PathVariable String managerId) throws Exception {
 
         List<EmployeeDto> dtos = employeeService.getAllEmployeesUnderManager(Integer.parseInt(managerId));
+        System.out.println(dtos);
         return this.addDtosToArrayList(dtos);
     }
 

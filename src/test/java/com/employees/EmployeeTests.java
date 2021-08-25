@@ -3,7 +3,9 @@ package com.employees;
 import com.employees.commands.AddingEmployeeToDepartmentCommand;
 import com.employees.commands.AddingEmployeeToTeamCommand;
 import com.employees.commands.AddingManagerToEmployeeCommand;
+import com.employees.models.Department;
 import com.employees.models.Employee;
+import com.employees.models.Team;
 import com.employees.repositories.DepartmentRepository;
 import com.employees.repositories.EmployeeRepository;
 import com.employees.repositories.TeamRepository;
@@ -26,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.text.SimpleDateFormat;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @ActiveProfiles("test")
+@DatabaseSetup(value = "/data.xml")
 public class EmployeeTests {
 
     @Autowired
@@ -64,14 +68,13 @@ public class EmployeeTests {
 
 
     @Test
-    @DatabaseSetup(value = "/data.xml")
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT, value= "/expectedDataForCreationTest.xml")
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForCreationTest.xml")
     public void test_employee_creation_and_insertion() throws Exception {
         Employee newEmployee = new Employee();
-        newEmployee.setEmployeeName("aaa");
-        newEmployee.setEmployeeId(1);
+        newEmployee.setEmployeeName("emp5");
+       // newEmployee.setEmployeeId(1);
         newEmployee.setGender('M');
-        newEmployee.setGrossSalary(5500.0);
+        newEmployee.setGrossSalary(25000.0);
 //        newEmployee.setDob(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2000"));
 //        newEmployee.setGraduationDate(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2018"));
         ObjectMapper objectMapper = new ObjectMapper();
@@ -83,51 +86,52 @@ public class EmployeeTests {
 
     }
     @Test
-    @DatabaseSetup(value = "/expectedDataForCreationTest.xml")
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT, value= "/data.xml")
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForDeleteTest.xml")
     public void test_delete_employee() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/employee/1")
+                        .delete("/employee/2")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test //fel get est3amel DTOs to return data w fel post e3mel command objects to send data
-
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForAddingTeamTest.xml")
     public void test_add_employee_to_team() throws Exception {
         AddingEmployeeToTeamCommand command = new AddingEmployeeToTeamCommand();
         command.setEmployeeId(1);
         command.setTeamId(10);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee/17/team/10")
+                        .post("/employee/1/team/112")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForAddingDepartmentTest.xml")
     public void test_add_employee_to_department() throws Exception {
         AddingEmployeeToDepartmentCommand command = new AddingEmployeeToDepartmentCommand();
         command.setEmployeeId(14);
         command.setDepartmentId(9);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee/14/department/9")
+                        .post("/employee/1/department/111")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForAddingManagerTest.xml")
     public void test_add_manager_to_employee() throws Exception {
         AddingManagerToEmployeeCommand command = new AddingManagerToEmployeeCommand();
         command.setEmployeeId(1);
         command.setManagerId(2);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee/1/manager/2")
+                        .post("/employee/1/manager/4")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());
@@ -139,59 +143,70 @@ public class EmployeeTests {
 
 
     @Test
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForModifyingTest.xml")
     public void test_modify_employee() throws Exception {
         Employee modifiedEmployee = new Employee();
-        modifiedEmployee.setEmployeeName("SsSsS");
+        modifiedEmployee.setEmployeeName("EMP1");
 //        modifiedEmployee.setGender('F');
-        modifiedEmployee.setGrossSalary(1313.13);
-//        Employee manager = new Employee();
-//        manager.setEmployeeName("MAN");
-//        employeeRepository.save(manager);
-//        modifiedEmployee.setManager(manager);
+        Optional<Employee> manager = employeeRepository.findById(4);
+        Employee managerToAdd = manager.get();
+        Optional<Department> department = departmentRepository.findById(111);
+        Department departmentToAdd = department.get();
+        Optional<Team> team = teamRepository.findById(112);
+        Team teamToAdd = team.get();
+        modifiedEmployee.setGrossSalary(5000.0);
+        modifiedEmployee.setEmployeeTeam(teamToAdd);
+        modifiedEmployee.setDepartment(departmentToAdd);
+        modifiedEmployee.setManager(managerToAdd);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/employee/14")
+                        .put("/employee/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(modifiedEmployee)))
                 .andExpect(status().isOk());
 
     }
     @Test
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/data.xml")
     public void test_get_employee_by_id() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/14")
+                        .get("/employee/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForRmovingManagerFromEmployeeTest.xml")
     public void test_remove_manager_from_employee() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/employee/14/manager")
+                        .delete("/employee/2/manager")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForRemovingTeamFromEmployeeTest.xml")
     public void test_remove_team_from_employee() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/employee/14/team")
+                        .delete("/employee/2/team")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
     @Test
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForRemovingDepartmentFromEmployeeTest.xml")
     public void test_remove_department_from_employee() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/employee/14/department")
+                        .delete("/employee/2/department")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/data.xml")
     public void test_get_all_employees() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
@@ -201,38 +216,41 @@ public class EmployeeTests {
     }
 
     @Test
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/data.xml")
     public void test_get_employee_salary() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/15/salary")
+                        .get("/employee/1/salary")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/data.xml")
     public void test_get_employees_under_manager() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/manager/20")
+                        .get("/employee/manager/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/data.xml")
     public void test_get_all_employees_under_manager() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/manager/14/all")
+                        .get("/employee/manager/1/all")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/data.xml")
     public void test_get_employees_in_team() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/team/10")
+                        .get("/employee/team/112")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
-//at2aked ezay en el entities fe3lan related f java?????
 }

@@ -12,6 +12,8 @@ import com.employees.repositories.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.employees.repositories.EmployeeRepository;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -51,11 +53,15 @@ public class EmployeeService {
         }
         List<Employee> managedEmployees = toBeRemoved.get().getManagedEmployees();
         Employee newManager = toBeRemoved.get().getManager();
+        Iterable<Employee> allEmployees = employeeRepository.findAll();
+        System.out.println("All : " + allEmployees);
         for (int i = 0; i < managedEmployees.size(); i++) {
             managedEmployees.get(i).setManager(newManager);
             employeeRepository.save(managedEmployees.get(i));
         }
         employeeRepository.deleteById(employeeToBeRemoved);
+        Iterable<Employee> remainingEmployees = employeeRepository.findAll();
+        System.out.println("Remaining : " + remainingEmployees);
         return "Employee deleted successfully!";
 
     }
@@ -98,7 +104,6 @@ public class EmployeeService {
         toBeUpdated.get().setManager(manager.get());
         employeeRepository.save(toBeUpdated.get());
     }
-
     public void updateEmployee(String employeeId, EmployeeDto employee) throws Exception {
         System.out.println("updating in service! EMPLOYEE: " + employee);
         Optional<Employee> toBeUpdated = employeeRepository.findById(Integer.parseInt(employeeId));
