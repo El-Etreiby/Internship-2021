@@ -36,6 +36,7 @@ public class EmployeeService {
         for (int i = 0; i < name.length(); i++)
             if (!name.matches("[a-zA-Z]+"))
                 throw new Exception("an employee's name should consist of only letters");
+        System.out.println("EMPLOYEE ID: " + employee.getEmployeeId());
         employeeRepository.save(employee);
         return "Employee added successfully!";
     }

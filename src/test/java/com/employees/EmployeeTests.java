@@ -8,12 +8,20 @@ import com.employees.repositories.DepartmentRepository;
 import com.employees.repositories.EmployeeRepository;
 import com.employees.repositories.TeamRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+import org.flywaydb.core.Flyway;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -28,6 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @ActiveProfiles("test")
 public class EmployeeTests {
 
@@ -43,15 +53,27 @@ public class EmployeeTests {
     @Autowired
     TeamRepository teamRepository;
 
+    @Autowired
+    protected Flyway flyway;
+
+    @Before
+    public void init() {
+        flyway.clean();
+        flyway.migrate();
+    }
+
+
     @Test
+    @DatabaseSetup(value = "/data.xml")
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT, value= "/expectedDataForCreationTest.xml")
     public void test_employee_creation_and_insertion() throws Exception {
-       // this.mockMvc = MockMvcBuilders.standaloneSetup(employeeController).build();
         Employee newEmployee = new Employee();
-        newEmployee.setEmployeeName("PPP");
+        newEmployee.setEmployeeName("aaa");
+        newEmployee.setEmployeeId(1);
         newEmployee.setGender('M');
-        newEmployee.setGrossSalary(10000.0);
-        newEmployee.setDob(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2000"));
-        newEmployee.setGraduationDate(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2018"));
+        newEmployee.setGrossSalary(5500.0);
+//        newEmployee.setDob(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2000"));
+//        newEmployee.setGraduationDate(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2018"));
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/employee")
@@ -61,10 +83,12 @@ public class EmployeeTests {
 
     }
     @Test
+    @DatabaseSetup(value = "/expectedDataForCreationTest.xml")
+    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT, value= "/data.xml")
     public void test_delete_employee() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/employee/26")
+                        .delete("/employee/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -73,7 +97,7 @@ public class EmployeeTests {
 
     public void test_add_employee_to_team() throws Exception {
         AddingEmployeeToTeamCommand command = new AddingEmployeeToTeamCommand();
-        command.setEmployeeId(17);
+        command.setEmployeeId(1);
         command.setTeamId(10);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
@@ -99,11 +123,11 @@ public class EmployeeTests {
     @Test
     public void test_add_manager_to_employee() throws Exception {
         AddingManagerToEmployeeCommand command = new AddingManagerToEmployeeCommand();
-        command.setEmployeeId(8);
-        command.setManagerId(14);
+        command.setEmployeeId(1);
+        command.setManagerId(2);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee/14/manager/17")
+                        .post("/employee/1/manager/2")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());

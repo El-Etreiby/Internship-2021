@@ -7,6 +7,10 @@ import java.util.List;
 @SqlResultSetMapping(name = "Employee")
 @Entity
 public class Employee {
+
+//    @SequenceGenerator(name= "EMPLOYEE_SEQUENCE", sequenceName = "EMPLOYEE_SEQUENCE_ID", initialValue=1, allocationSize = 1)
+//    @GeneratedValue(strategy=GenerationType.IDENTITY, generator="EMPLOYEE_SEQUENCE")
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer employeeId;
