@@ -1,6 +1,3 @@
---CREATE SCHEMA IF NOT EXISTS public;
---SET SCHEMA public;
-
 create table department
 (
     department_id int not null primary key,
@@ -13,14 +10,18 @@ create table team
 );
 create table employee
 (
-    employee_id int not null primary key,
+    employee_id int not null primary key auto_increment,
     dob             datetime(6)  null,
-    employee_name   varchar(255) null,
+    first_name   varchar(255) null,
+    last_name   varchar(255) null,
     expertise       varchar(255) null,
     gender          char         not null,
     graduation_date datetime(6)  null,
     gross_salary    double       null,
-    net_salary      double       null,
+    days_off_taken  int,
+    national_id     bigint,
+    years_of_experience int,
+    degree varchar(255),
     department_id   int          null,
     team_id         int          null,
     manager_id      int          null,
@@ -32,10 +33,27 @@ create table employee
         foreign key (manager_id) references employee (employee_id)
 );
 
-create table hibernate_sequence(
-    sequence_name VARCHAR,
-    next_val INTEGER NOT NULL
+create table salary
+(
+    month int,
+    year int,
+    employee_id int,
+    gross_salary double,
+    net_salary double,
+    bonus double,
+    raise double,
+    leave_deductions double,
+    taxes double,
+    primary key(month, year, employee_id),
+    constraint FK8d7lrsr6kwirr93rx0tafppoqa
+        foreign key (employee_id) references employee (employee_id)
 );
-INSERT INTO hibernate_sequence (next_val) VALUES (1);
 
---CREATE SEQUENCE EMPLOYEE_SEQUENCE_ID START WITH (select max(employee_id) + 1 from employee);
+create table account_information
+(
+    username varchar(255) primary key,
+    password varchar(255),
+    employee_id int,
+    constraint FK8d7lrsr6kwidsr93rx0tafnoqa
+        foreign key (employee_id) references employee (employee_id)
+);

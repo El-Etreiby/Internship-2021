@@ -14,7 +14,7 @@ public class DepartmentController {
 
     @PostMapping(path = "/")
     @ResponseBody
-    public String addNewEmployee(@RequestBody Department department){
+    public String addNewDepartment(@RequestBody Department department){
         departmentService.addNewDepartment(department);
         return "Department Saved!";
     }

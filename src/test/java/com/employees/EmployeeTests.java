@@ -26,16 +26,12 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.Optional;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-//@RunWith(SpringRunner.class)
-//@WebMvcTest(EmployeeController.class)
-//@SpringBootTest
-
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -68,70 +64,71 @@ public class EmployeeTests {
 
 
     @Test
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForCreationTest.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForCreationTest.xml")
     public void test_employee_creation_and_insertion() throws Exception {
         Employee newEmployee = new Employee();
-        newEmployee.setEmployeeName("emp5");
-       // newEmployee.setEmployeeId(1);
+        newEmployee.setFirstName("e");
+//        newEmployee.setEmployeeId(5);
         newEmployee.setGender('M');
         newEmployee.setGrossSalary(25000.0);
 //        newEmployee.setDob(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2000"));
 //        newEmployee.setGraduationDate(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2018"));
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee")
+                        .post("/hr/employee")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newEmployee)))
+                .andDo(print())
                 .andExpect(status().isOk());
 
     }
+
     @Test
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForDeleteTest.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForDeleteTest.xml")
     public void test_delete_employee() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/employee/2")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .delete("/hr/employee/2"))
+                .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test //fel get est3amel DTOs to return data w fel post e3mel command objects to send data
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForAddingTeamTest.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForAddingTeamTest.xml")
     public void test_add_employee_to_team() throws Exception {
         AddingEmployeeToTeamCommand command = new AddingEmployeeToTeamCommand();
         command.setEmployeeId(1);
-        command.setTeamId(10);
+        command.setTeamId(112);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee/1/team/112")
+                        .post("/hr/employee/1/team/112")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForAddingDepartmentTest.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForAddingDepartmentTest.xml")
     public void test_add_employee_to_department() throws Exception {
         AddingEmployeeToDepartmentCommand command = new AddingEmployeeToDepartmentCommand();
-        command.setEmployeeId(14);
-        command.setDepartmentId(9);
+        command.setEmployeeId(1);
+        command.setDepartmentId(111);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee/1/department/111")
+                        .post("/hr/employee/1/department/111")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForAddingManagerTest.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForAddingManagerTest.xml")
     public void test_add_manager_to_employee() throws Exception {
         AddingManagerToEmployeeCommand command = new AddingManagerToEmployeeCommand();
         command.setEmployeeId(1);
-        command.setManagerId(2);
+        command.setManagerId(4);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/employee/1/manager/4")
+                        .post("/hr/employee/1/manager/4")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());
@@ -143,10 +140,11 @@ public class EmployeeTests {
 
 
     @Test
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForModifyingTest.xml")
+    @Transactional
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForModifyingTest.xml")
     public void test_modify_employee() throws Exception {
         Employee modifiedEmployee = new Employee();
-        modifiedEmployee.setEmployeeName("EMP1");
+        modifiedEmployee.setFirstName("A");
 //        modifiedEmployee.setGender('F');
         Optional<Employee> manager = employeeRepository.findById(4);
         Employee managerToAdd = manager.get();
@@ -160,96 +158,125 @@ public class EmployeeTests {
         modifiedEmployee.setManager(managerToAdd);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/employee/1")
+                        .put("/hr/employee/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(modifiedEmployee)))
+                .andDo(print())
                 .andExpect(status().isOk());
 
     }
+
     @Test
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/data.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
     public void test_get_employee_by_id() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/1")
+                        .get("/hr/employee/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForRmovingManagerFromEmployeeTest.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForRmovingManagerFromEmployeeTest.xml")
     public void test_remove_manager_from_employee() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/employee/2/manager")
+                        .delete("/hr/employee/2/manager")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForRemovingTeamFromEmployeeTest.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForRemovingTeamFromEmployeeTest.xml")
     public void test_remove_team_from_employee() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/employee/2/team")
+                        .delete("/hr/employee/2/team")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
     @Test
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/expectedDataForRemovingDepartmentFromEmployeeTest.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForRemovingDepartmentFromEmployeeTest.xml")
     public void test_remove_department_from_employee() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/employee/2/department")
+                        .delete("/hr/employee/2/department")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/data.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
     public void test_get_all_employees() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/all")
+                        .get("/hr/employee/all")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/data.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
     public void test_get_employee_salary() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/1/salary")
+                        .get("/hr/employee/1/salary")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/data.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
     public void test_get_employees_under_manager() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/manager/1")
+                        .get("/hr/employeesUnderManager/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/data.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
     public void test_get_all_employees_under_manager() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/manager/1/all")
+                        .get("/hr/allEmployeesUnderManager/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
+
     @Test
-    @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT_UNORDERED, value= "/data.xml")
-    public void test_get_employees_in_team() throws Exception {
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
+    public void test_employee_get_salary_history() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/employee/team/112")
+                        .get("/employee/salaryHistory")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(1)))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForRaiseTest.xml")
+    public void test_raise_salary() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/hr/employee/1/raise/1000")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForVacationRequest.xml")
+    public void test_employee_vacation_request() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/employee/vacation")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(1)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
+    public void test_get_employees_in_team() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/hr/employeesInTeam/team/112")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

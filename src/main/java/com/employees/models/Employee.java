@@ -1,31 +1,38 @@
 package com.employees.models;
 
+import com.employees.errorHandling.BusinessException;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.EqualsAndHashCode;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-@SqlResultSetMapping(name = "Employee")
 @Entity
+@EqualsAndHashCode
 public class Employee {
-
-//    @SequenceGenerator(name= "EMPLOYEE_SEQUENCE", sequenceName = "EMPLOYEE_SEQUENCE_ID", initialValue=1, allocationSize = 1)
-//    @GeneratedValue(strategy=GenerationType.IDENTITY, generator="EMPLOYEE_SEQUENCE")
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer employeeId;
 
-    // private Set<String> expertise;
-    private String employeeName;
+    @Column(unique = true)
+    private Long nationalId;
+
+    private String firstName;
+    private String lastName;
+    private Integer yearsOfExperience;
+    @Enumerated(EnumType.STRING)
+    private Degree degree;
     private Date dob;
     private char gender;
     private Date graduationDate;
     private Double grossSalary;
-    private Double netSalary;
     private String expertise;
+    private Integer daysOffTaken;
 
     @ManyToOne
     @JoinColumn(name = "department_id")
+    @JsonBackReference
     private Department department;
 
     @ManyToOne
@@ -33,22 +40,30 @@ public class Employee {
     private Team employeeTeam; //the team the employee belongs to
 
     @OneToMany(mappedBy = "manager",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER)
-    // @JsonIgnore
+            cascade = CascadeType.ALL )
     private List<Employee> managedEmployees;
 
     @ManyToOne
     @JoinColumn(name = "manager_id")
     private Employee manager;
 
+    @OneToOne(mappedBy = "employee")
+    private Salary salary;
+
+    @OneToOne(mappedBy = "employee")
+    private AccountInformation accountInformation;
+
+
     public Double getGrossSalary() {
         return grossSalary;
     }
 
-    public void setGrossSalary(Double grossSalary) {
+    public void setGrossSalary(Double grossSalary) throws BusinessException {
+        Double minimumWage = 588.235294118;
+        if(grossSalary < minimumWage){
+            throw new BusinessException("the minimum employee wage is $589!");
+        }
         this.grossSalary = grossSalary;
-        this.setNetSalary();
         //System.out.println("Net salary updated: " + this.netSalary + " -------------------");
 
     }
@@ -59,20 +74,6 @@ public class Employee {
 
     public void setEmployeeId(Integer employeeId) {
         this.employeeId = employeeId;
-    }
-
-    public Double getNetSalary() {
-        this.setNetSalary();
-        return netSalary;
-    }
-
-    public void setNetSalary() {
-        Double taxRate = 0.85;
-        Double deductions = 500.0;
-        if (this.grossSalary != null)
-            this.netSalary = this.grossSalary * taxRate - deductions;
-        if (this.netSalary < 0.0)
-            this.netSalary = 0.0;
     }
 
 
@@ -99,14 +100,6 @@ public class Employee {
 
     public void setDepartment(Department department) {
         this.department = department;
-    }
-
-    public String getEmployeeName() {
-        return employeeName;
-    }
-
-    public void setEmployeeName(String name) {
-        this.employeeName = name;
     }
 
     public Date getDob() {
@@ -149,20 +142,82 @@ public class Employee {
         this.expertise = expertise;
     }
 
-    public Employee() {
+    public String getFirstName() {
+        return firstName;
+    }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Long getNationalId() {
+        return nationalId;
+    }
+
+    public void setNationalId(Long nationalId) {
+        this.nationalId = nationalId;
+    }
+
+    public Integer getYearsOfExperience() {
+        return yearsOfExperience;
+    }
+
+    public Integer getDaysOffTaken() {
+        return daysOffTaken;
+    }
+
+    public void setYearsOfExperience(Integer yearsOfExperience) {
+        this.yearsOfExperience = yearsOfExperience;
+    }
+
+    public Degree getDegree() {
+        return degree;
+    }
+
+    public void setDegree(Degree degree) {
+        this.degree = degree;
+    }
+
+    public void raiseEmployeeSalary(Double raise) throws BusinessException {
+        if (raise > 0.0) {
+            this.setGrossSalary(this.getGrossSalary() + raise);
+            return;
+        }
+        throw new BusinessException("a raise must be of a positive value!");
+    }
+
+    public void takeDayOff(){
+        if(this.daysOffTaken==null){
+            this.daysOffTaken=0;
+        }
+
+        this.daysOffTaken++;
+    }
+
+    public Employee() {
+        this.daysOffTaken=0;
     }
 
     public String toString() {
+        String result = "";
         return "ID: " + this.employeeId + "\n"
-                + "Team ID:  " + this.employeeTeam.getTeamId() + "\n"
-                + "Name: " + this.employeeName + "\n"
+                + "National ID: " + this.nationalId + "\n"
+                + "First name: " + this.firstName + "\n"
+                + "last name: " + this.lastName + "\n"
+                + "Degree: " + this.degree + "\n"
+                + "Years of experience: " + this.yearsOfExperience + "\n"
+                + "Days Off taken this year: " + this.daysOffTaken + "\n"
                 + "DoB: " + this.dob + "\n"
                 + "DoG: " + this.graduationDate + "\n"
                 + "Gender: " + this.gender + "\n"
-                + "Gross salary: " + this.grossSalary + "\n"
-                + "Net salary: " + this.netSalary + "\n"
-                + "Department ID: " + this.getDepartment().getDepartmentId() + "\n"
-                + "Manager ID: " + this.getManager().getEmployeeId();
+                + "Gross salary: " + this.grossSalary + "\n";
     }
 }

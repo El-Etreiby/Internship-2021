@@ -1,8 +1,10 @@
 <dataset>
     <department department_id="111" department_name = "dep1"/>
     <team team_id="112" team_name = "team1"/>
-    <employee employee_id="1" employee_name="emp1" gender = "M" gross_salary="5500"/>
-    <employee employee_id="2" employee_name="emp2" gender="F" gross_salary="10000" department_id="111" manager_id="1"/>
-    <employee employee_id="3" employee_name="emp3" gender="F" gross_salary="15000" department_id="111" team_id="112" manager_id="2"/>
-    <employee employee_id="4" employee_name="emp4" gender="M" gross_salary="20000" department_id="111" team_id="112"/>
+    <employee employee_id="1" first_name="a" gender = "M" gross_salary="5500"/>
+    <employee employee_id="2" first_name="b" gender="F" gross_salary="10000" department_id="111" manager_id="1"/>
+    <employee employee_id="3" first_name="c" gender="F" gross_salary="15000" department_id="111" team_id="112" manager_id="2"/>
+    <employee employee_id="4" first_name="d" gender="M" gross_salary="20000" department_id="111" team_id="112"/>
+    <account_information username = "user1" password = "123" employee_id="1"/>
+    <salary month="10" year="2012" employee_id="1" gross_salary="5500"/>
 </dataset>

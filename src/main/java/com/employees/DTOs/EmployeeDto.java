@@ -1,5 +1,6 @@
 package com.employees.DTOs;
 
+import com.employees.models.Degree;
 import com.employees.models.Employee;
 
 import java.util.Date;
@@ -8,9 +9,13 @@ public class EmployeeDto {
     private Integer employeeId;
     private Date dob;
     private Date graduationDate;
-    private String employeeName;
+    private String firstName;
+    private String lastName;
+    private Degree degree;
+    private Long nationalId;
+    private Integer daysOff;
+    private Integer yearsOfExperience;
     private Double grossSalary;
-    private Double netSalary;
     private Integer managerId;
     private Integer teamId;
     private Integer departmentId;
@@ -42,28 +47,12 @@ public class EmployeeDto {
         this.graduationDate = graduationDate;
     }
 
-    public String getEmployeeName() {
-        return employeeName;
-    }
-
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
-    }
-
     public Double getGrossSalary() {
         return grossSalary;
     }
 
     public void setGrossSalary(Double grossSalary) {
         this.grossSalary = grossSalary;
-    }
-
-    public Double getNetSalary() {
-        return netSalary;
-    }
-
-    public void setNetSalary(Double netSalary) {
-        this.netSalary = netSalary;
     }
 
     public Integer getManagerId() {
@@ -106,13 +95,66 @@ public class EmployeeDto {
         this.gender = gender;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Degree getDegree() {
+        return degree;
+    }
+
+    public void setDegree(Degree degree) {
+        this.degree = degree;
+    }
+
+    public Long getNationalId() {
+        return nationalId;
+    }
+
+    public void setNationalId(Long nationalId) {
+        this.nationalId = nationalId;
+    }
+
+    public Integer getDaysOff() {
+        return daysOff;
+    }
+
+    public Integer getYearsOfExperience() {
+        return yearsOfExperience;
+    }
+
+    public void setYearsOfExperience(Integer yearsOfExperience) {
+        this.yearsOfExperience = yearsOfExperience;
+        if(yearsOfExperience >= 10) {
+            this.daysOff = 30;
+        }else{
+            this.daysOff=21;
+        }
+    }
+
     public EmployeeDto(Employee employee) {
         this.dob = employee.getDob();
         this.employeeId = employee.getEmployeeId();
-        this.employeeName = employee.getEmployeeName();
+        this.firstName = employee.getFirstName();
+        this.lastName = employee.getLastName();
+        this.yearsOfExperience = employee.getYearsOfExperience();
+        this.daysOff = employee.getDaysOffTaken();
+        this.nationalId = employee.getNationalId();
+        this.degree = employee.getDegree();
         this.graduationDate = employee.getGraduationDate();
         this.grossSalary = employee.getGrossSalary();
-        this.netSalary = employee.getNetSalary();
         this.gender = employee.getGender();
         this.expertise = employee.getExpertise();
         if (employee.getManager() != null)
@@ -126,12 +168,17 @@ public class EmployeeDto {
 
     public String toString() {
         String result = "ID: " + this.employeeId + "\n"
-                + "Name: " + this.employeeName + "\n"
+                + "National ID: " + this.nationalId + "\n"
+                + "First Name: " + this.firstName + "\n"
+                + "last Name: " + this.lastName + "\n"
+                + "Degree: " + this.degree + "\n"
+                + "Years of experience: " + this.yearsOfExperience + "\n"
+                + "Days Off Remaining this year: " + this.daysOff + "\n"
                 + "DoB: " + this.dob + "\n"
+                + "National ID: " + this.nationalId + "\n"
                 + "DoG: " + this.graduationDate + "\n"
                 + "Gender: " + this.gender + "\n"
                 + "Gross salary: " + this.grossSalary + "\n"
-                + "Net salary: " + this.netSalary + "\n"
                 + "Expertise: " + this.expertise + "\n";
         if (this.departmentId != null)
             result += "Department ID: " + this.departmentId + "\n";

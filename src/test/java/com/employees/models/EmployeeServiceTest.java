@@ -1,7 +1,7 @@
 package com.employees.models;
 
 
-import com.employees.services.EmployeeService;
+import com.employees.services.HrService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 public class EmployeeServiceTest {
 
     @Autowired
-    private EmployeeService employeeService;
+    private HrService employeeService;
 
     @Test
     public void test_add_new_employee() throws Exception {
@@ -22,7 +22,7 @@ public class EmployeeServiceTest {
         Employee newEmployee = new Employee();
         newEmployee.setGender('F');
         newEmployee.setGrossSalary(20000.0);
-        newEmployee.setEmployeeName("s");
+        newEmployee.setFirstName("s");
 //        // act
         String response =  employeeService.addNewEmployee(newEmployee);
 //        // assert

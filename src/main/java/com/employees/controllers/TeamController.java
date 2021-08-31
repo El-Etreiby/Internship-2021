@@ -24,7 +24,7 @@ public class TeamController {
     @ResponseBody
     public String removeTeam(@RequestBody Integer teamToBeRemoved) throws Exception {
         teamService.removeTeam(teamToBeRemoved);
-        return "Team Saved!";
+        return "Team Removed!";
     }
 
 

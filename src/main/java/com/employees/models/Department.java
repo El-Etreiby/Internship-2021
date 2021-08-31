@@ -1,21 +1,23 @@
 package com.employees.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 public class Department {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer departmentId;
     private String departmentName;
-//many side is the owning side (owns FK)!!!!
-    // joinColumn("fk name")
 
     @OneToMany(
-            mappedBy="department",
+            mappedBy = "department",
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<Employee> departmentMembers;
 
 
