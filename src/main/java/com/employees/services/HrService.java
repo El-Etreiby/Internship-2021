@@ -1,30 +1,30 @@
 package com.employees.services;
 
 import com.employees.DTOs.EmployeeDto;
-import com.employees.errorHandling.BusinessException;
-import com.employees.errorHandling.DepartmentNotFoundException;
-import com.employees.errorHandling.EmployeeNotFoundException;
-import com.employees.errorHandling.TeamNotFoundException;
-import com.employees.models.Department;
-import com.employees.models.Employee;
-import com.employees.models.Team;
-import com.employees.repositories.DepartmentRepository;
-import com.employees.repositories.TeamRepository;
+import com.employees.errorHandling.*;
+import com.employees.models.*;
+import com.employees.repositories.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.employees.repositories.EmployeeRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
+@Slf4j
 public class HrService {
 
     @Autowired
+    SalaryRepository salaryRepository;
+
+    @Autowired
     EmployeeRepository employeeRepository;
+
+    @Autowired
+    AccountInformationRepository accountInformationRepository;
 
     @Autowired
     TeamRepository teamRepository;
@@ -32,7 +32,7 @@ public class HrService {
     @Autowired
     DepartmentRepository departmentRepository;
 
-    public String addNewEmployee(Employee employee) throws Exception {
+    public String addNewEmployee(Employee employee, String providedPassword) throws Exception {
         if (employee.getGender() != 'M' && employee.getGender() != 'F' && employee.getGender() != 'm' && employee.getGender() != 'f')
             throw new Exception("an employee's gender can only be male (represented as 'M') or female (represented as 'F')");
         String firstName;
@@ -41,15 +41,54 @@ public class HrService {
             firstName = employee.getFirstName();
             for (int i = 0; i < firstName.length(); i++)
                 if (!firstName.matches("[a-zA-Z]+"))
-                    throw new Exception("an employee's first name should consist of only letters");
+                    throw new InvalidInputException("an employee's first name should consist of only letters");
         }
         if (employee.getLastName() != null) {
             lastName = employee.getLastName();
             for (int i = 0; i < lastName.length(); i++)
                 if (!lastName.matches("[a-zA-Z]+"))
-                    throw new Exception("an employee's last name should consist of only letters");
+                    throw new InvalidInputException("an employee's last name should consist of only letters");
         }
+        AccountInformation accountInformation = new AccountInformation();
+        String username = "";
+        String password = "";
+        accountInformation.setEmployee(employee);
+              if(employee.getFirstName()!=null && employee.getLastName()!=null)
+        {
+            username+=employee.getFirstName();
+            username+=".";
+            username+=employee.getLastName();
+        }
+        Optional<AccountInformation> duplicateAccount = accountInformationRepository.findById(username);
+                   if(duplicateAccount.isPresent()){
+            int index = 1;
+            while(duplicateAccount.isPresent()){
+            duplicateAccount = accountInformationRepository.findById(username+index);
+            index++;
+        }
+        username=username+index;
+        }
+//        Random random = new Random();
+//        int leftLimit=48; // number 0
+//        int rightLimit=122; //letter z
+//        int targetStringLength = 10;
+//        password = random.ints(leftLimit, rightLimit + 1)
+//                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+//                .limit(targetStringLength)
+//                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+//                .toString();
+        System.out.println("Your generated username is: " + username);
+        System.out.println("Your generated password is: " + providedPassword);
+        System.out.println("Usernames and passwords can be updated through the website");
+        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        String encryptedPassword = encoder.encode(providedPassword);
+        accountInformation.setPassword(encryptedPassword);
+        accountInformation.setRole("EMPLOYEE");
+        accountInformation.setUsername(username);
         employeeRepository.save(employee);
+        accountInformation.setEmployee(employee);
+        System.out.println("Creating and saving employee " + employee.getEmployeeId());
+        accountInformationRepository.save(accountInformation);
         return "Employee added successfully!";
     }
 
@@ -292,23 +331,60 @@ public class HrService {
         return result;
     }
 
-//    public void addBonusToEmployee(Integer employeeId, Double bonus) throws EmployeeNotFoundException, BusinessException {
-//        Optional<Employee> employee = employeeRepository.findById(employeeId);
-//        if (!employee.isPresent()) {
-//            throw new EmployeeNotFoundException("This employee does not exist!");
-//        }
-//        employee.get().applyBonus(bonus);
-//        employeeRepository.save(employee.get());
-//
-//    }
+    public void addBonusToEmployee(Integer employeeId, Double bonus) throws EmployeeNotFoundException, BusinessException {
+        Optional<Employee> employee = employeeRepository.findById(employeeId);
+        if (!employee.isPresent()) {
+            throw new EmployeeNotFoundException("This employee does not exist!");
+        }
+        employee.get().setBonus(bonus);
+        employeeRepository.save(employee.get());
+
+    }
 
     public void addRaiseToEmployee(Integer employeeId, Double raise) throws EmployeeNotFoundException, BusinessException {
         Optional<Employee> employee = employeeRepository.findById(employeeId);
         if (!employee.isPresent()) {
             throw new EmployeeNotFoundException("This employee does not exist!");
         }
-        employee.get().raiseEmployeeSalary(raise);
-        employeeRepository.save(employee.get());
+        Employee toBeUpdated = employee.get();
+        toBeUpdated.raiseEmployeeSalary(raise);
+        employeeRepository.save(toBeUpdated);
+    }
+
+    public void issueSalaries(int month, int year) throws EmployeeNotFoundException, BusinessException {
+        Iterable<Employee> employee = employeeRepository.findAll();
+        Iterator<Employee> employees = employee.iterator();
+        Employee temp;
+        while (employees.hasNext()) {
+            temp = employees.next();
+            SalaryId salaryId = new SalaryId();
+            salaryId.setEmployeeId(temp.getEmployeeId());
+            salaryId.setMonth(month);
+            salaryId.setYear(year);
+            Salary newSalary = new Salary();
+            newSalary.setEmployee(temp);
+            newSalary.setId(salaryId);
+            newSalary.setBonus(temp.getBonus());
+            newSalary.setRaise(temp.getRaise());
+            newSalary.setGrossSalary(temp.getGrossSalary());
+            newSalary.calculateNetSalary();
+            salaryRepository.save(newSalary);
+            temp.setBonus(0.0);
+            temp.setGrossSalary(temp.getGrossSalary() + temp.getRaise());
+            temp.setRaise(0.0);
+            if (temp.getYearsOfExperience() < 10 && temp.getDaysOffTaken() > 21) {
+                temp.setDaysOffTaken(21);
+            }
+            if (temp.getYearsOfExperience() > 10 && temp.getDaysOffTaken() > 30) {
+                temp.setDaysOffTaken(30);
+            }
+            if (month == 12) {
+                temp.setDaysOffTaken(0);
+                temp.setYearsOfExperience(temp.getYearsOfExperience() + 1);
+            }
+            employeeRepository.save(temp);
+        }
+
     }
 
 

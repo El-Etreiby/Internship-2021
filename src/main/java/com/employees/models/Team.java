@@ -14,7 +14,7 @@ public class Team {
     private String teamName;
 
     @OneToMany(mappedBy = "employeeTeam",
-            cascade = CascadeType.ALL) //mappedBy = "fk attribute in other table name"
+            cascade = CascadeType.PERSIST) //mappedBy = "fk attribute in other table name"
     private List<Employee> teamMembers;
 
     public Integer getTeamId() {

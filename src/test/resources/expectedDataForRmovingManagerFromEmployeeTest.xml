@@ -1,10 +1,12 @@
 <dataset>
     <department department_id="111" department_name = "dep1"/>
     <team team_id="112" team_name = "team1"/>
-    <employee employee_id="1" first_name="a" gender = "M" gross_salary="5500"/>
-    <employee employee_id="2" first_name="b" gender="F" gross_salary="10000" department_id="111" team_id="112"/>
-    <employee employee_id="3" first_name="c" gender="F" gross_salary="15000" department_id="111" team_id="112" manager_id="2"/>
-    <employee employee_id="4" first_name="d" gender="M" gross_salary="20000" department_id="111" team_id="112"/>
-    <account_information username = "user1" password = "123" employee_id="1"/>
-    <salary month="10" year="2012" employee_id="1" gross_salary="5500"/>
+    <employee employee_id="1" first_name="a" last_name="a" gender = "M" gross_salary="5500" dob="1990-1-15 00:00:00" national_id="1002" days_off_taken="0" degree="SENIOR"/>
+    <employee employee_id="2" first_name="b" last_name="b" gender="F" gross_salary="10000" department_id="111" team_id="112" days_off_taken="0" dob="1990-1-15 00:00:00" national_id="1003" degree="SENIOR"/>
+    <employee employee_id="3" first_name="c" last_name="c" gender="F" gross_salary="15000" department_id="111" days_off_taken="0" team_id="112" manager_id="2" dob="1990-1-15 00:00:00" national_id="1004" degree="SENIOR"/>
+    <employee employee_id="4" first_name="d" last_name="d" gender="M" gross_salary="20000" department_id="111" days_off_taken="0" team_id="112" dob="1990-1-15 00:00:00" national_id="1005" degree="SENIOR"/>
+    <account_information username = "user1" password = "{bcrypt}$2a$10$l5ePscPNDPLSQ5algjg1S.u.gARwGuwcBv5intOhYn1sX1QLjyem." employee_id="1" role="ADMIN"/>
+    <salary month="10" year="2021" employee_id="1" gross_salary="5500"/>
+    <salary month="12" year="2021" employee_id="1" gross_salary="5500"/>
+    <salary month="5" year="2022" employee_id="1" gross_salary="15000" leave_deductions="2000"/>
 </dataset>

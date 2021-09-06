@@ -173,7 +173,7 @@ public class EmployeeDto {
                 + "last Name: " + this.lastName + "\n"
                 + "Degree: " + this.degree + "\n"
                 + "Years of experience: " + this.yearsOfExperience + "\n"
-                + "Days Off Remaining this year: " + this.daysOff + "\n"
+                + "Days Off taken this year: " + this.daysOff + "\n"
                 + "DoB: " + this.dob + "\n"
                 + "National ID: " + this.nationalId + "\n"
                 + "DoG: " + this.graduationDate + "\n"

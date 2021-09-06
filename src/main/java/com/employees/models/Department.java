@@ -15,7 +15,7 @@ public class Department {
 
     @OneToMany(
             mappedBy = "department",
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.PERSIST,
             fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<Employee> departmentMembers;

@@ -2,6 +2,7 @@ package com.employees.models;
 
 import com.employees.errorHandling.BusinessException;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
@@ -9,33 +10,53 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
+@Data
 @EqualsAndHashCode
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer employeeId;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable=false)
     private Long nationalId;
 
+    @Column(nullable=false)
     private String firstName;
+
+    @Column(nullable=false)
     private String lastName;
+
+
     private Integer yearsOfExperience;
+
     @Enumerated(EnumType.STRING)
+    @Column(nullable=false)
     private Degree degree;
+
+
+    private Double bonus;
+    private Double raise;   //represents last month's raise (i.e. restarted at the end of each month)
+
+    @Column(nullable=false)
     private Date dob;
+
+    @Column(nullable=false)
     private char gender;
+
     private Date graduationDate;
+
+    @Column(nullable=false)
     private Double grossSalary;
+
     private String expertise;
     private Integer daysOffTaken;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "department_id")
     @JsonBackReference
     private Department department;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "team_id")
     private Team employeeTeam; //the team the employee belongs to
 
@@ -43,14 +64,16 @@ public class Employee {
             cascade = CascadeType.ALL )
     private List<Employee> managedEmployees;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "manager_id")
     private Employee manager;
 
-    @OneToOne(mappedBy = "employee")
-    private Salary salary;
+    @OneToMany(mappedBy = "employee",
+            cascade = CascadeType.ALL)
+    private List<Salary> salary;
 
-    @OneToOne(mappedBy = "employee")
+    @OneToOne(mappedBy = "employee",
+            cascade = CascadeType.ALL)
     private AccountInformation accountInformation;
 
 
@@ -188,7 +211,7 @@ public class Employee {
 
     public void raiseEmployeeSalary(Double raise) throws BusinessException {
         if (raise > 0.0) {
-            this.setGrossSalary(this.getGrossSalary() + raise);
+            this.raise=raise;
             return;
         }
         throw new BusinessException("a raise must be of a positive value!");
@@ -204,10 +227,10 @@ public class Employee {
 
     public Employee() {
         this.daysOffTaken=0;
+        this.yearsOfExperience=0;
     }
 
     public String toString() {
-        String result = "";
         return "ID: " + this.employeeId + "\n"
                 + "National ID: " + this.nationalId + "\n"
                 + "First name: " + this.firstName + "\n"
@@ -215,6 +238,7 @@ public class Employee {
                 + "Degree: " + this.degree + "\n"
                 + "Years of experience: " + this.yearsOfExperience + "\n"
                 + "Days Off taken this year: " + this.daysOffTaken + "\n"
+                + "Bonus for this month: " + this.bonus + "\n"
                 + "DoB: " + this.dob + "\n"
                 + "DoG: " + this.graduationDate + "\n"
                 + "Gender: " + this.gender + "\n"
