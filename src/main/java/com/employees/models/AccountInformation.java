@@ -13,6 +13,10 @@ import java.util.Random;
 public class AccountInformation {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer accountId;
+
+    @Column(unique = true, nullable=false)
     private String username;
 
     @Column(nullable=false)
@@ -51,5 +55,17 @@ public class AccountInformation {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    public Integer getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Integer id) {
+        this.accountId = id;
+    }
+
+    public String getRole() {
+        return role;
     }
 }

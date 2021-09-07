@@ -22,15 +22,15 @@ public class AccountInformationService {
     }
 
     public void removeAccount(String username) throws InvalidUsernameException {
-        Optional<AccountInformation> accountInfo = accountInformationRepository.findById(username);
+        Optional<AccountInformation> accountInfo = accountInformationRepository.findByUsername(username);
         if(!accountInfo.isPresent()){
             throw new InvalidUsernameException("This username does not exist!");
         }
-        accountInformationRepository.deleteById(username);
+        accountInformationRepository.deleteByUsername(username);
     }
 
     public Integer verifyCredentials(String username, String password) throws InvalidUsernameException, IncorrectPasswordException {
-        Optional<AccountInformation> accountInfo = accountInformationRepository.findById(username);
+        Optional<AccountInformation> accountInfo = accountInformationRepository.findByUsername(username);
         if(!accountInfo.isPresent()){
             throw new InvalidUsernameException("This username does not exist!");
         }

@@ -1,5 +1,7 @@
 package com.employees.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.List;
 
 import javax.persistence.*;
@@ -13,9 +15,11 @@ public class Team {
 
     private String teamName;
 
-    @OneToMany(mappedBy = "employeeTeam",
-            cascade = CascadeType.PERSIST) //mappedBy = "fk attribute in other table name"
-    private List<Employee> teamMembers;
+//    @JsonManagedReference (value = "employee's team")
+//    @OneToMany(mappedBy = "employeeTeam",
+//            cascade = CascadeType.PERSIST,
+//            fetch = FetchType.EAGER) //mappedBy = "fk attribute in other table name"
+//    private List<Employee> teamMembers;
 
     public Integer getTeamId() {
         return teamId;
@@ -33,11 +37,11 @@ public class Team {
         this.teamName = teamName;
     }
 
-    public List<Employee> getTeamMembers() {
-        return teamMembers;
-    }
-
-    public void setTeamMembers(List<Employee> teamMembers) {
-        this.teamMembers = teamMembers;
-    }
+//    public List<Employee> getTeamMembers() {
+//        return teamMembers;
+//    }
+//
+//    public void setTeamMembers(List<Employee> teamMembers) {
+//        this.teamMembers = teamMembers;
+//    }
 }

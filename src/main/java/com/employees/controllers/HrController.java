@@ -43,7 +43,7 @@ public class HrController {
 
     @PostMapping(path = "/employee/password/{password}")
     @ResponseBody
-    public String addNewEmployee(@PathVariable String password,@RequestBody Employee employee) throws Exception  //zawed account info
+    public String addNewEmployee(@RequestBody Employee employee, @PathVariable String password) throws Exception  //zawed account info
     {
         log.info("provided pw: " + password);
         hrService.addNewEmployee(employee, password);
@@ -54,6 +54,7 @@ public class HrController {
     @ResponseBody
     public String updateEmployee(@RequestBody Employee employee, @PathVariable String id) throws Exception {
         EmployeeDto employeeDto = new EmployeeDto(employee);
+        log.info("dto: " + employeeDto);
         hrService.updateEmployee(id, employeeDto);
         return "Employee modified successfully!";
     }
@@ -166,20 +167,20 @@ public class HrController {
     }
 
 
-    @GetMapping(path = "/employeesInTeam/team/{teamId}")
-    @ResponseBody
-    public ArrayList<String> getEmployeesInTeam(@PathVariable String teamId) throws Exception {
-
-        List<EmployeeDto> dtos = hrService.getEmployeesInTeam(Integer.parseInt(teamId));
-        return this.addDtosToArrayList(dtos);
-    }
-
-    @GetMapping(path = "/employeesInDepartment/{departmentId}")
-    @ResponseBody
-    public ArrayList<String> getEmployeesInDepartment(@PathVariable String departmentId) throws Exception {
-        List<EmployeeDto> dtos = hrService.getEmployeesInDepartment(Integer.parseInt(departmentId));
-        return this.addDtosToArrayList(dtos);
-    }
+//    @GetMapping(path = "/employeesInTeam/team/{teamId}")
+//    @ResponseBody
+//    public ArrayList<String> getEmployeesInTeam(@PathVariable String teamId) throws Exception {
+//
+//        List<EmployeeDto> dtos = hrService.getEmployeesInTeam(Integer.parseInt(teamId));
+//        return this.addDtosToArrayList(dtos);
+//    }
+//
+//    @GetMapping(path = "/employeesInDepartment/{departmentId}")
+//    @ResponseBody
+//    public ArrayList<String> getEmployeesInDepartment(@PathVariable String departmentId) throws Exception {
+//        List<EmployeeDto> dtos = hrService.getEmployeesInDepartment(Integer.parseInt(departmentId));
+//        return this.addDtosToArrayList(dtos);
+//    }
 
     @PostMapping(path = "/team")
     @ResponseBody

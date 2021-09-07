@@ -38,17 +38,17 @@ public class EmployeeService {
     }
 
     public String changeUsername(String newUsername) throws DuplicateUsernameException {
-        Optional<AccountInformation> duplicate = accountInformationRepository.findById(newUsername);
+        Optional<AccountInformation> duplicate = accountInformationRepository.findByUsername(newUsername);
         if(duplicate.isPresent()){
             throw new DuplicateUsernameException("this username already exists");
         }
         String username = this.getUsername();
-        Optional<AccountInformation> account = accountInformationRepository.findById(username);
+        Optional<AccountInformation> account = accountInformationRepository.findByUsername(username);
  //       System.out.println("OLD: " + username + account.isPresent());
         if (account.isPresent()) {
             AccountInformation updatedAccount = account.get();
-            accountInformationRepository.deleteByUser(username);
-            Optional<AccountInformation> oldAccount = accountInformationRepository.findById(username);
+            accountInformationRepository.deleteByUsername(username);
+            Optional<AccountInformation> oldAccount = accountInformationRepository.findByUsername(username);
             System.out.println("oldA : " + oldAccount.isPresent());
             updatedAccount.setUsername(newUsername);
             accountInformationRepository.save(updatedAccount);
@@ -64,7 +64,7 @@ public class EmployeeService {
     }
 
     public Salary getSomeSalaryHistory(SalaryId salaryId) throws EmployeeNotFoundException, SalaryNotFoundException, InvalidUsernameException, BusinessException {
-        Optional<AccountInformation> account = accountInformationRepository.findById(this.getUsername());
+        Optional<AccountInformation> account = accountInformationRepository.findByUsername(this.getUsername());
         if (!account.isPresent()) {
             throw new InvalidUsernameException("account does not exist!");
         }
@@ -83,7 +83,7 @@ public class EmployeeService {
     }
 
     public List<Salary> getAllSalaryHistory() throws EmployeeNotFoundException, InvalidUsernameException, BusinessException {
-        Optional<AccountInformation> account = accountInformationRepository.findById(this.getUsername());
+        Optional<AccountInformation> account = accountInformationRepository.findByUsername(this.getUsername());
         if (!account.isPresent()) {
             throw new InvalidUsernameException("account does not exist!");
         }
@@ -95,7 +95,7 @@ public class EmployeeService {
     }
 
     public int getDaysOffByDate(String month, String year) throws InvalidUsernameException, EmployeeNotFoundException, SalaryNotFoundException {
-        Optional<AccountInformation> account = accountInformationRepository.findById(this.getUsername());
+        Optional<AccountInformation> account = accountInformationRepository.findByUsername(this.getUsername());
         if (!account.isPresent()) {
             throw new InvalidUsernameException("account does not exist!");
         }
@@ -117,7 +117,7 @@ public class EmployeeService {
 
     public String changePassword(String newPassword) {
         String username = this.getUsername();
-        Optional<AccountInformation> account = accountInformationRepository.findById(username);
+        Optional<AccountInformation> account = accountInformationRepository.findByUsername(username);
         //       System.out.println("OLD: " + username + account.isPresent());
         if (account.isPresent()) {
             AccountInformation updatedAccount = account.get();

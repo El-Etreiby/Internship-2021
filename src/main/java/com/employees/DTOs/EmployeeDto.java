@@ -20,7 +20,7 @@ public class EmployeeDto {
     private Integer teamId;
     private Integer departmentId;
     private String expertise;
-    private char gender;
+    private String gender;
 
 
     public Integer getEmployeeId() {
@@ -87,11 +87,11 @@ public class EmployeeDto {
         this.expertise = expertise;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(char gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 

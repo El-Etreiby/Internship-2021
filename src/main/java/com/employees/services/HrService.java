@@ -33,8 +33,9 @@ public class HrService {
     DepartmentRepository departmentRepository;
 
     public String addNewEmployee(Employee employee, String providedPassword) throws Exception {
-        if (employee.getGender() != 'M' && employee.getGender() != 'F' && employee.getGender() != 'm' && employee.getGender() != 'f')
-            throw new Exception("an employee's gender can only be male (represented as 'M') or female (represented as 'F')");
+        if ( !(employee.getGender().equals("male") || employee.getGender().equals("female")) ) {
+            throw new Exception("an employee's gender can only be male (represented as 'male') or female (represented as 'female')");
+        }
         String firstName;
         String lastName;
         if (employee.getFirstName() != null) {
@@ -49,24 +50,39 @@ public class HrService {
                 if (!lastName.matches("[a-zA-Z]+"))
                     throw new InvalidInputException("an employee's last name should consist of only letters");
         }
+        if(employee.getNationalId()==null){
+            throw new MissingInputException("insert a value for the national ID");
+        }
+        if (employee.getNationalId() < 0) {
+            throw new InvalidInputException("invalid entry for the national ID");
+        }
+        if(employee.getDob()==null){
+            throw new MissingInputException("insert a value for the DoB");
+        }
+        if (employee.getDob().getYear() < 0 || employee.getDob().getYear() > 121) {
+            throw new InvalidInputException("Enter a value less than 2021 or more than 1900 for the date of birth " + employee.getDob().getYear());
+        }
+        if(employee.getGraduationDate()!=null) {
+            if (employee.getGraduationDate().getYear() < 0 || employee.getGraduationDate().getYear() > 121) {
+                throw new InvalidInputException("Enter a value less than 2021 or more than 1900 for the date of birth ");
+            }
+        }
         AccountInformation accountInformation = new AccountInformation();
         String username = "";
-        String password = "";
         accountInformation.setEmployee(employee);
-              if(employee.getFirstName()!=null && employee.getLastName()!=null)
-        {
-            username+=employee.getFirstName();
-            username+=".";
-            username+=employee.getLastName();
+        if (employee.getFirstName() != null && employee.getLastName() != null) {
+            username += employee.getFirstName();
+            username += ".";
+            username += employee.getLastName();
         }
-        Optional<AccountInformation> duplicateAccount = accountInformationRepository.findById(username);
-                   if(duplicateAccount.isPresent()){
+        Optional<AccountInformation> duplicateAccount = accountInformationRepository.findByUsername(username);
+        if (duplicateAccount.isPresent()) {
             int index = 1;
-            while(duplicateAccount.isPresent()){
-            duplicateAccount = accountInformationRepository.findById(username+index);
-            index++;
-        }
-        username=username+index;
+            while (duplicateAccount.isPresent()) {
+                duplicateAccount = accountInformationRepository.findByUsername(username + index);
+                index++;
+            }
+            username = username + index;
         }
 //        Random random = new Random();
 //        int leftLimit=48; // number 0
@@ -156,70 +172,119 @@ public class HrService {
 
     @Transactional
     public void updateEmployee(String employeeId, EmployeeDto employee) throws Exception {
-        //  System.out.println("updating in service! EMPLOYEE: " + employee);
+        log.info("updating in service! EMPLOYEE: " + employee);
         Optional<Employee> toBeUpdated = employeeRepository.findById(Integer.parseInt(employeeId));
         if (!toBeUpdated.isPresent()) {
             throw new Exception("This employee does not exist");
         }
-
+        Employee modified = toBeUpdated.get();
         if (employee.getExpertise() != null) {
-            toBeUpdated.get().setExpertise(employee.getExpertise());
-            employeeRepository.save(toBeUpdated.get());
+            modified.setExpertise(employee.getExpertise());
         }
         if (employee.getFirstName() != null) {
-            toBeUpdated.get().setFirstName(employee.getFirstName());
-            employeeRepository.save(toBeUpdated.get());
+            String firstName = employee.getFirstName();
+            for (int i = 0; i < firstName.length(); i++)
+                if (!firstName.matches("[a-zA-Z]+"))
+                    throw new InvalidInputException("an employee's first name should consist of only letters");
+            modified.setFirstName(employee.getFirstName());
         }
         if (employee.getLastName() != null) {
-            toBeUpdated.get().setLastName(employee.getLastName());
-            employeeRepository.save(toBeUpdated.get());
+            String lastName = employee.getLastName();
+            for (int i = 0; i < lastName.length(); i++)
+                if (!lastName.matches("[a-zA-Z]+"))
+                    throw new InvalidInputException("an employee's last name should consist of only letters");
+            modified.setFirstName(employee.getFirstName());
+        }
+        if(employee.getLastName() != null || employee.getFirstName() != null){
+            log.info("updating employee's username...");
+            updateUsername(employee, employeeId);
         }
         if (employee.getNationalId() != null) {
-            toBeUpdated.get().setNationalId(employee.getNationalId());
-            employeeRepository.save(toBeUpdated.get());
+            if (employee.getNationalId() < 0) {
+                throw new InvalidInputException("invalid entry for the national ID");
+            }
+            modified.setNationalId(employee.getNationalId());
         }
-        if (employee.getYearsOfExperience() != null) {
-            toBeUpdated.get().setYearsOfExperience(employee.getYearsOfExperience());
-            employeeRepository.save(toBeUpdated.get());
-        }
+//        if (employee.getYearsOfExperience() != null) {
+//            if(employee.getYearsOfExperience() < 0){
+//                throw new InvalidInputException("invalid entry for the years of experience");
+//            }
+//            modified.setYearsOfExperience(employee.getYearsOfExperience());
+//        }
         if (employee.getDepartmentId() != null) {
+            log.info("department != null");
             Optional<Department> department = departmentRepository.findById(employee.getDepartmentId());
             if (!department.isPresent()) {
                 throw new DepartmentNotFoundException("You must enter a department that exists in the database. If you want to add this employee to this department insert the department in the database first!");
             }
-            toBeUpdated.get().setDepartment(department.get());
-            employeeRepository.save(toBeUpdated.get());
+            modified.setDepartment(department.get());
         }  //handle modifying and inserting non existing departments, teams or managers
         if (employee.getTeamId() != null) {
             Optional<Team> team = teamRepository.findById(employee.getTeamId());
             if (!team.isPresent())
                 throw new TeamNotFoundException("You must enter a team that exists in the database. If you want to add this employee to this team insert the team in the database first!");
-            toBeUpdated.get().setEmployeeTeam(team.get());
-            employeeRepository.save(toBeUpdated.get());
+            modified.setEmployeeTeam(team.get());
         }
         if (employee.getDob() != null) {
-            toBeUpdated.get().setDob(employee.getDob());
-            employeeRepository.save(toBeUpdated.get());
+            if (employee.getDob().getYear() < 0 || employee.getDob().getYear() > 121) {
+                throw new InvalidInputException("Enter a value less than 2021 or more than 1900 for the date of birth ");
+            }
+            modified.setDob(employee.getDob());
         }
-        if (employee.getGender() == 'M' || employee.getGender() == 'F' || employee.getGender() == 'f' || employee.getGender() == 'm') {
-            toBeUpdated.get().setGender(employee.getGender());
-            employeeRepository.save(toBeUpdated.get());
+        if(employee.getGender()!=null) {
+            if (employee.getGender().equals("male") || employee.getGender().equals("female")) {
+                modified.setGender(employee.getGender());
+            } else {
+                throw new Exception("an employee's gender can only be male (represented as 'male') or female (represented as 'female')");
+            }
         }
         if (employee.getGraduationDate() != null) {
-            toBeUpdated.get().setGraduationDate(employee.getGraduationDate());
-            employeeRepository.save(toBeUpdated.get());
+            if (employee.getGraduationDate().getYear() < 1900 || employee.getGraduationDate().getYear() > 2021) {
+                throw new InvalidInputException("Enter a value less than 2021 or more than 1900 for the date of graduation ");
+            }
+            modified.setGraduationDate(employee.getGraduationDate());
         }
         if (employee.getGrossSalary() != null) {
-            toBeUpdated.get().setGrossSalary(employee.getGrossSalary());
-            employeeRepository.save(toBeUpdated.get());
+            modified.setGrossSalary(employee.getGrossSalary());
         }
         if (employee.getManagerId() != null) {
             Optional<Employee> manager = employeeRepository.findById(employee.getManagerId());
             if (!manager.isPresent())
                 throw new EmployeeNotFoundException("You must enter a manager that exists in the database. If you want to add this manager to this employee insert the manager in the database first!");
-            toBeUpdated.get().setManager(manager.get());
-            employeeRepository.save(toBeUpdated.get());
+            modified.setManager(manager.get());
         }
+        log.info("savinf modifiedd: " + modified);
+        employeeRepository.save(modified);
+    }
+
+    private void updateUsername(EmployeeDto employee, String employeeId) {
+        log.info("updating username...");
+        Optional<AccountInformation> account = accountInformationRepository.findByEmployeeId(Integer.parseInt(employeeId));
+        AccountInformation toBeUpdated = account.get();
+        String username = "";
+        Optional<Employee> emp = employeeRepository.findById(Integer.parseInt(employeeId));
+        if(employee.getFirstName()==null){
+            employee.setFirstName(emp.get().getFirstName());
+        }
+        if(employee.getLastName()==null){
+            employee.setLastName(emp.get().getLastName());
+        }
+        if (employee.getFirstName() != null && employee.getLastName() != null) {
+            username += employee.getFirstName();
+            username += ".";
+            username += employee.getLastName();
+        }
+        Optional<AccountInformation> duplicateAccount = accountInformationRepository.findByUsername(username);
+        if (duplicateAccount.isPresent()) {
+            int index = 1;
+            while (duplicateAccount.isPresent()) {
+                duplicateAccount = accountInformationRepository.findByUsername(username + index);
+                index++;
+            }
+            username = username + index;
+        }
+        toBeUpdated.setUsername(username);
+        log.info("username updated: " + username);
     }
 
     public EmployeeDto getEmployee(Integer employeeId) throws Exception {
@@ -291,19 +356,19 @@ public class HrService {
         return result;
     }
 
-    public List<EmployeeDto> getEmployeesInTeam(int teamId) throws Exception {
-        Optional<Team> team = teamRepository.findById(teamId);
-        if (!team.isPresent())
-            throw new TeamNotFoundException("This team does not exist!");
-        //System.out.println("Manager found! " + manager.get().getManagedEmployees());
-        List<Employee> managedEmployees = team.get().getTeamMembers();
-        ArrayList<EmployeeDto> result = new ArrayList<>();
-        for (int i = 0; i < managedEmployees.size(); i++) {
-            result.add(new EmployeeDto(managedEmployees.get(i)));
-
-        }
-        return result;
-    }
+//    public List<EmployeeDto> getEmployeesInTeam(int teamId) throws Exception {
+//        Optional<Team> team = teamRepository.findById(teamId);
+//        if (!team.isPresent())
+//            throw new TeamNotFoundException("This team does not exist!");
+//        //System.out.println("Manager found! " + manager.get().getManagedEmployees());
+//        List<Employee> managedEmployees = team.get().getManagedEmployees();
+//        ArrayList<EmployeeDto> result = new ArrayList<>();
+//        for (int i = 0; i < managedEmployees.size(); i++) {
+//            result.add(new EmployeeDto(managedEmployees.get(i)));
+//
+//        }
+//        return result;
+//    }
 
     public List<EmployeeDto> getAllEmployeesUnderManager(int managerId) throws Exception {
         Optional<Employee> manager = employeeRepository.findById(managerId);
@@ -317,19 +382,19 @@ public class HrService {
         return result;
     }
 
-    public List<EmployeeDto> getEmployeesInDepartment(int departmentId) throws Exception {
-        Optional<Department> department = departmentRepository.findById(departmentId);
-        if (!department.isPresent())
-            throw new DepartmentNotFoundException("This department does not exist!");
-        //System.out.println("Manager found! " + manager.get().getManagedEmployees());
-        List<Employee> teamEmployees = department.get().getDepartmentMembers();
-        ArrayList<EmployeeDto> result = new ArrayList<>();
-        for (int i = 0; i < teamEmployees.size(); i++) {
-            result.add(new EmployeeDto(teamEmployees.get(i)));
-
-        }
-        return result;
-    }
+//    public List<EmployeeDto> getEmployeesInDepartment(int departmentId) throws Exception {
+//        Optional<Department> department = departmentRepository.findById(departmentId);
+//        if (!department.isPresent())
+//            throw new DepartmentNotFoundException("This department does not exist!");
+//        //System.out.println("Manager found! " + manager.get().getManagedEmployees());
+//        List<Employee> teamEmployees = department.get().getDepartmentMembers();
+//        ArrayList<EmployeeDto> result = new ArrayList<>();
+//        for (int i = 0; i < teamEmployees.size(); i++) {
+//            result.add(new EmployeeDto(teamEmployees.get(i)));
+//
+//        }
+//        return result;
+//    }
 
     public void addBonusToEmployee(Integer employeeId, Double bonus) throws EmployeeNotFoundException, BusinessException {
         Optional<Employee> employee = employeeRepository.findById(employeeId);
@@ -347,7 +412,7 @@ public class HrService {
             throw new EmployeeNotFoundException("This employee does not exist!");
         }
         Employee toBeUpdated = employee.get();
-        toBeUpdated.raiseEmployeeSalary(raise);
+        toBeUpdated.setRaise(raise);
         employeeRepository.save(toBeUpdated);
     }
 
@@ -364,9 +429,6 @@ public class HrService {
             Salary newSalary = new Salary();
             newSalary.setEmployee(temp);
             newSalary.setId(salaryId);
-            newSalary.setBonus(temp.getBonus());
-            newSalary.setRaise(temp.getRaise());
-            newSalary.setGrossSalary(temp.getGrossSalary());
             newSalary.calculateNetSalary();
             salaryRepository.save(newSalary);
             temp.setBonus(0.0);

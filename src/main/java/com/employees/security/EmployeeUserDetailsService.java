@@ -22,7 +22,7 @@ public class EmployeeUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) {
 
-        Optional<AccountInformation> accountInformation = accountInformationRepository.findById(s);
+        Optional<AccountInformation> accountInformation = accountInformationRepository.findByUsername(s);
         if(!accountInformation.isPresent()) {
             return null;
         }

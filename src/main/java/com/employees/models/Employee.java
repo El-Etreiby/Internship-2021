@@ -2,6 +2,7 @@ package com.employees.models;
 
 import com.employees.errorHandling.BusinessException;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,35 +18,35 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer employeeId;
 
-    @Column(unique = true, nullable=false)
+    @Column(unique = true, nullable = false)
     private Long nationalId;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String firstName;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String lastName;
 
 
     private Integer yearsOfExperience;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Degree degree;
 
 
     private Double bonus;
     private Double raise;   //represents last month's raise (i.e. restarted at the end of each month)
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Date dob;
 
-    @Column(nullable=false)
-    private char gender;
+    @Column(nullable = false)
+    private String gender;
 
     private Date graduationDate;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Double grossSalary;
 
     private String expertise;
@@ -53,7 +54,6 @@ public class Employee {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "department_id")
-    @JsonBackReference
     private Department department;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -61,7 +61,8 @@ public class Employee {
     private Team employeeTeam; //the team the employee belongs to
 
     @OneToMany(mappedBy = "manager",
-            cascade = CascadeType.ALL )
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
     private List<Employee> managedEmployees;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -70,10 +71,12 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee",
             cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Salary> salary;
 
     @OneToOne(mappedBy = "employee",
             cascade = CascadeType.ALL)
+    @JsonIgnore
     private AccountInformation accountInformation;
 
 
@@ -83,7 +86,7 @@ public class Employee {
 
     public void setGrossSalary(Double grossSalary) throws BusinessException {
         Double minimumWage = 588.235294118;
-        if(grossSalary < minimumWage){
+        if (grossSalary < minimumWage) {
             throw new BusinessException("the minimum employee wage is $589!");
         }
         this.grossSalary = grossSalary;
@@ -133,11 +136,11 @@ public class Employee {
         this.dob = dob;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(char gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -209,29 +212,51 @@ public class Employee {
         this.degree = degree;
     }
 
-    public void raiseEmployeeSalary(Double raise) throws BusinessException {
-        if (raise > 0.0) {
-            this.raise=raise;
+    public void setRaise(Double raise) throws BusinessException {
+        if (raise == null) {
+            return;
+        }
+        if (raise >= 0.0) {
+            this.raise = raise;
             return;
         }
         throw new BusinessException("a raise must be of a positive value!");
     }
 
-    public void takeDayOff(){
-        if(this.daysOffTaken==null){
-            this.daysOffTaken=0;
+    public void setBonus(Double bonus) throws BusinessException {
+        if (bonus == null) {
+            return;
+        }
+        if (bonus >= 0.0) {
+            this.bonus = bonus;
+        } else {
+            throw new BusinessException("a bonus must be of a positive value!");
+        }
+    }
+
+    public void applyRaise(Double raise) throws BusinessException {
+        if (raise > 0.0) {
+            this.raise = raise;
+        } else {
+            throw new BusinessException("a raise must be of a positive value!");
+        }
+    }
+
+    public void takeDayOff() {
+        if (this.daysOffTaken == null) {
+            this.daysOffTaken = 0;
         }
 
         this.daysOffTaken++;
     }
 
     public Employee() {
-        this.daysOffTaken=0;
-        this.yearsOfExperience=0;
+        this.daysOffTaken = 0;
+        this.yearsOfExperience = 0;
     }
 
     public String toString() {
-        return "ID: " + this.employeeId + "\n"
+        String result = "ID: " + this.employeeId + "\n"
                 + "National ID: " + this.nationalId + "\n"
                 + "First name: " + this.firstName + "\n"
                 + "last name: " + this.lastName + "\n"
@@ -243,5 +268,15 @@ public class Employee {
                 + "DoG: " + this.graduationDate + "\n"
                 + "Gender: " + this.gender + "\n"
                 + "Gross salary: " + this.grossSalary + "\n";
+        if (this.department != null) {
+            result += "Deaprtment ID: " + this.department.getDepartmentId() + "\n";
+        }
+        if (this.manager != null) {
+            result += "Manager ID: " + this.manager.getEmployeeId() + "\n";
+        }
+        if (this.employeeTeam != null) {
+            result += "Team ID: " + this.employeeTeam.getTeamId() + "\n";
+        }
+        return result;
     }
 }

@@ -13,12 +13,12 @@ public class Department {
     private Integer departmentId;
     private String departmentName;
 
-    @OneToMany(
-            mappedBy = "department",
-            cascade = CascadeType.PERSIST,
-            fetch = FetchType.EAGER)
-    @JsonManagedReference
-    private List<Employee> departmentMembers;
+//    @OneToMany(
+//            mappedBy = "department",
+//            cascade = CascadeType.PERSIST,
+//            fetch = FetchType.EAGER)
+//    @JsonManagedReference(value="employee's department")
+//    private List<Employee> departmentMembers;
 
 
     public Integer getDepartmentId() {
@@ -37,11 +37,11 @@ public class Department {
         this.departmentName = name;
     }
 
-    public List<Employee> getDepartmentMembers() {
-        return departmentMembers;
-    }
-
-    public void setDepartmentMembers(List<Employee> departmentMembers) {
-        this.departmentMembers = departmentMembers;
-    }
+//    public List<Employee> getDepartmentMembers() {
+//        return departmentMembers;
+//    }
+//
+//    public void setDepartmentMembers(List<Employee> departmentMembers) {
+//        this.departmentMembers = departmentMembers;
+//    }
 }

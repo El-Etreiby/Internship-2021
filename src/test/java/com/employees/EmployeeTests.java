@@ -88,11 +88,11 @@ public class EmployeeTests {
         Employee newEmployee = new Employee();
         newEmployee.setFirstName("e");
         newEmployee.setLastName("x");
-        newEmployee.setGender('M');
+        newEmployee.setGender("male");
         newEmployee.setGrossSalary(25000.0);
         newEmployee.setNationalId(1001L);
         newEmployee.setDegree(Degree.SENIOR);
-        newEmployee.setDob(new SimpleDateFormat("dd/MM/yyyy").parse("15/1/1990"));
+        newEmployee.setDob(new SimpleDateFormat("dd/MM/yyyy").parse("15/1/2001"));
 //        newEmployee.setGraduationDate(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2018"));
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
@@ -237,7 +237,6 @@ public class EmployeeTests {
     public void test_modify_employee() throws Exception {
         Employee modifiedEmployee = new Employee();
         modifiedEmployee.setFirstName("A");
-//        modifiedEmployee.setGender('F');
         Optional<Employee> manager = employeeRepository.findById(4);
         Employee managerToAdd = manager.get();
         Optional<Department> department = departmentRepository.findById(111);
@@ -248,6 +247,7 @@ public class EmployeeTests {
         modifiedEmployee.setEmployeeTeam(teamToAdd); //should i map fks manually or are they handled by hibernate
         modifiedEmployee.setDepartment(departmentToAdd);
         modifiedEmployee.setManager(managerToAdd);
+        log.info("modTest: " + modifiedEmployee);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/hr/employee/1")
@@ -378,32 +378,7 @@ public class EmployeeTests {
                 .andDo(print());
     }
 
-//    @Test
-//    public void test_issue_salary()
-//            throws InterruptedException {
-//        Thread.sleep(100L);
-//
-//        assertThat(counter.getInvocationCount()).isGreaterThan(0);
-//    }
 
-//    @Test
-//    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForIssueSalaryTest.xml")
-//    public void test_issue_salary() throws Exception {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        Optional<Employee> employee = employeeRepository.findById(2);
-//        Salary newSalary = new Salary();
-//        newSalary.setEmployee(employee.get());
-//        SalaryId salaryId = new SalaryId();
-//        salaryId.setEmployeeId(2);
-//        salaryId.setMonth(4);
-//        salaryId.setYear(2021);
-//        mockMvc.perform(MockMvcRequestBuilders
-//                        .post("/hr/employee/salary")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(newSalary)))
-//                .andExpect(status().isOk())
-//                .andDo(print());
-//    }
 
     @Test
     @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForVacationRequest.xml")
@@ -417,15 +392,15 @@ public class EmployeeTests {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
-    public void test_get_employees_in_team() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/hr/employeesInTeam/team/112")
-                        .with(httpBasic("user1", "123"))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
+//    public void test_get_employees_in_team() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders
+//                        .get("/hr/employeesInTeam/team/112")
+//                        .with(httpBasic("user1", "123"))
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
