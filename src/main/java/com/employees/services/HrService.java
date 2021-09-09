@@ -131,11 +131,12 @@ public class HrService {
             managedEmployee.setManager(newManager);
             employeeRepository.save(managedEmployee);
         }
-        employeeRepository.deleteByEmployeeId(employeeToBeRemoved);
         Optional<AccountInformation> toBeDeleted = accountInformationRepository.findByEmployeeId(employeeToBeRemoved);
         if(toBeDeleted.isPresent()) {
             accountInformationRepository.deleteByUsername(toBeDeleted.get().getUsername());
         }
+        employeeRepository.deleteByEmployeeId(employeeToBeRemoved);
+
 
     }
 
