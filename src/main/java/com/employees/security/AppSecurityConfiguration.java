@@ -20,7 +20,7 @@ public class AppSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
        // PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         auth.authenticationProvider(authenticationProvider());
     }

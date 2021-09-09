@@ -1,8 +1,7 @@
 package com.employees.controllers;
 
 import com.employees.DTOs.EmployeeDto;
-import com.employees.errorHandling.BusinessException;
-import com.employees.errorHandling.EmployeeNotFoundException;
+import com.employees.errorHandling.InternalException;
 import com.employees.models.*;
 import com.employees.services.DepartmentService;
 import com.employees.services.HrService;
@@ -16,11 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 @RestController
 @RequestMapping(path = "/hr")
@@ -57,6 +54,13 @@ public class HrController {
         log.info("dto: " + employeeDto);
         hrService.updateEmployee(id, employeeDto);
         return "Employee modified successfully!";
+    }
+
+    @PutMapping(path = "/employee/{employeeId}/role")
+    @ResponseBody
+    public String updateEmployeesRole(@PathVariable String employeeId, @RequestBody String role) throws Exception {
+        hrService.updateEmployeeRole(role,Integer.parseInt(employeeId));
+        return "Employee role modified successfully!";
     }
 
     @DeleteMapping(path = "/employee/{id}") // Map ONLY POST Requests
@@ -135,17 +139,15 @@ public class HrController {
 
     @GetMapping(path = "/employee/{employeeId}/salary")
     @ResponseBody
-    public List<Salary> getEmployeeSalary(@PathVariable String employeeId) throws Exception {
+    public List<Salary> getEmployeeSalary(@PathVariable String employeeId) {
         Integer intEmployeeId = Integer.parseInt(employeeId);
-        List<Salary> result = salaryService.getAllSalaryHistory(intEmployeeId);
-        return result;
+        return salaryService.getAllSalaryHistory(intEmployeeId);
     }
 
     @GetMapping(path = "/employee/salary")
     @ResponseBody
-    public Salary getEmployeeSalaryByDate(@RequestBody SalaryId salaryId) throws Exception {
-        Salary result = salaryService.getSomeSalaryHistory(salaryId);
-        return result;
+    public Salary getEmployeeSalaryByDate(@RequestBody SalaryId salaryId) {
+        return salaryService.getSomeSalaryHistory(salaryId);
     }
 
     @GetMapping(path = "/employeesUnderManager/{managerId}")
@@ -166,22 +168,6 @@ public class HrController {
         return this.addDtosToArrayList(dtos);
     }
 
-
-//    @GetMapping(path = "/employeesInTeam/team/{teamId}")
-//    @ResponseBody
-//    public ArrayList<String> getEmployeesInTeam(@PathVariable String teamId) throws Exception {
-//
-//        List<EmployeeDto> dtos = hrService.getEmployeesInTeam(Integer.parseInt(teamId));
-//        return this.addDtosToArrayList(dtos);
-//    }
-//
-//    @GetMapping(path = "/employeesInDepartment/{departmentId}")
-//    @ResponseBody
-//    public ArrayList<String> getEmployeesInDepartment(@PathVariable String departmentId) throws Exception {
-//        List<EmployeeDto> dtos = hrService.getEmployeesInDepartment(Integer.parseInt(departmentId));
-//        return this.addDtosToArrayList(dtos);
-//    }
-
     @PostMapping(path = "/team")
     @ResponseBody
     public String addNewTeam(@RequestBody Team team) {
@@ -189,7 +175,7 @@ public class HrController {
         return "Team Saved!";
     }
 
-    @DeleteMapping(path = "/team/{id}") // Map ONLY POST Requests
+    @DeleteMapping(path = "/team") // Map ONLY POST Requests
     @ResponseBody
     public String removeTeam(@RequestBody Integer teamToBeRemoved) throws Exception {
         teamService.removeTeam(teamToBeRemoved);
@@ -212,7 +198,7 @@ public class HrController {
 
     @PostMapping(path = "/employee/{employeeId}/bonus/{bonus}")
     @ResponseBody
-    public String addBonusToEmployee(@PathVariable String employeeId, @PathVariable String bonus) throws Exception {
+    public String addBonusToEmployee(@PathVariable String employeeId, @PathVariable String bonus) {
         Integer intEmployeeId = Integer.parseInt(employeeId);
         Double doubleBonus = Double.parseDouble(bonus);
         hrService.addBonusToEmployee(intEmployeeId,doubleBonus);
@@ -221,7 +207,7 @@ public class HrController {
 
     @PostMapping(path = "/employee/{employeeId}/raise/{raise}")
     @ResponseBody
-    public String addRaiseToEmployee(@PathVariable String employeeId, @PathVariable String raise) throws Exception {
+    public String addRaiseToEmployee(@PathVariable String employeeId, @PathVariable String raise) {
         Integer intEmployeeId = Integer.parseInt(employeeId);
         Double doubleRaise = Double.parseDouble(raise);
         hrService.addRaiseToEmployee(intEmployeeId, doubleRaise);
@@ -229,15 +215,15 @@ public class HrController {
     }
 
     private ArrayList<String> addDtosToArrayList(List<EmployeeDto> dtos) {
-        ArrayList<String> result = new ArrayList<String>();
-        for (int i = 0; i < dtos.size(); i++) {
-            result.add(dtos.get(i).toString());
+        ArrayList<String> result = new ArrayList<>();
+        for (EmployeeDto dto : dtos) {
+            result.add(dto.toString());
         }
         return result;
     }
 
     @Scheduled(fixedRateString = "2628000000") //2628000000 = month
-    public void issueSalaries() throws ParseException, BusinessException, EmployeeNotFoundException {
+    public void issueSalaries() throws ParseException {
         String dateAsString = dateFormat.format(new Date());
         Date date = dateFormat.parse(dateAsString);
         hrService.issueSalaries(date.getMonth(), date.getYear());

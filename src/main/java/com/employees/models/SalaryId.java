@@ -1,13 +1,16 @@
 package com.employees.models;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Embeddable;
 import java.io.Serializable;
-import java.time.Month;
-import java.time.Year;
 import java.util.Objects;
 
 @Embeddable
+@Getter
+@Setter
 public class SalaryId implements Serializable {
 
     private int month;
@@ -40,29 +43,5 @@ public class SalaryId implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(employee_id, month, year);
-    }
-
-    public int getMonth() {
-        return month;
-    }
-
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public Integer getEmployeeId() {
-        return employee_id;
-    }
-
-    public void setEmployeeId(Integer employeeId) {
-        this.employee_id = employeeId;
     }
 }

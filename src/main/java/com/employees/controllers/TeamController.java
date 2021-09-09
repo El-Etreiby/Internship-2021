@@ -20,7 +20,7 @@ public class TeamController {
         teamService.addNewTeam(team);
         return "Team Saved!";
     }
-    @DeleteMapping(path = "/{id}") // Map ONLY POST Requests
+    @DeleteMapping(path = "") // Map ONLY POST Requests
     @ResponseBody
     public String removeTeam(@RequestBody Integer teamToBeRemoved) throws Exception {
         teamService.removeTeam(teamToBeRemoved);

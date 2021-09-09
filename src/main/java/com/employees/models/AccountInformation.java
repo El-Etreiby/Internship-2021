@@ -1,15 +1,13 @@
 package com.employees.models;
 
-
-import lombok.Data;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Random;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class AccountInformation {
 
     @Id
@@ -22,50 +20,14 @@ public class AccountInformation {
     @Column(nullable=false)
     private String password;
 
-    @Column(nullable=false)
+    @Column(nullable=false, columnDefinition = "varchar(255) default 'EMPLOYEE'")
     private String role;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id", nullable=false)
     private Employee employee;
 
-    public String getUsername() {
-        return username;
-    }
-
     public void setRole(String role){
-        this.role = "ROLE_"+role;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
-    }
-
-    public Integer getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Integer id) {
-        this.accountId = id;
-    }
-
-    public String getRole() {
-        return role;
+        this.role = role;
     }
 }

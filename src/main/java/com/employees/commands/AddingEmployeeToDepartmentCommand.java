@@ -1,23 +1,14 @@
 package com.employees.commands;
 
-public class AddingEmployeeToDepartmentCommand {
+import lombok.Getter;
+import lombok.Setter;
+
+import java.io.Serializable;
+
+@Getter
+@Setter
+public class AddingEmployeeToDepartmentCommand implements Serializable {
 
     private Integer employeeId;
     private Integer departmentId;
-
-    public Integer getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Integer employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public Integer getDepartmentId() {
-        return departmentId;
-    }
-
-    public void setDepartmentId(Integer departmentId) {
-        this.departmentId = departmentId;
-    }
 }

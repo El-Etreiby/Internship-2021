@@ -18,11 +18,6 @@ public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
     @Modifying
     void deleteByEmployeeId(Integer id);
 
-//    @Transactional
-//    @Modifying
-//    @Query("update Employee e set e.netSalary = :netSalary where e.employeeId = :parseInt")
-//    void updateEmployeeNetSalary(int parseInt, Double netSalary);
-
     @Transactional
     @Query(value = "with recursive cte (employee_id, first_name, last_name, manager_id, dob, gender, graduation_date, gross_salary, department_id, team_id, expertise, days_off_taken, degree, years_of_experience, national_id, bonus, raise) as (\n" +
             "    select     e1.employee_id, e1.first_name, e1.last_name, e1.manager_id, e1.dob, e1.gender, e1.graduation_date, e1.gross_salary, e1.department_id, e1.team_id, e1.expertise, e1.days_off_taken, e1.degree, e1.years_of_experience, e1.national_id, e1.bonus, e1.raise\n" +

@@ -1,17 +1,19 @@
 package com.employees.models;
 
-import com.employees.errorHandling.BusinessException;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.employees.errorHandling.BadArgumentException;
+import com.employees.errorHandling.InternalException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode
 public class Employee {
     @Id
@@ -27,7 +29,7 @@ public class Employee {
     @Column(nullable = false)
     private String lastName;
 
-
+    @Column(columnDefinition = "int default 0")
     private Integer yearsOfExperience;
 
     @Enumerated(EnumType.STRING)
@@ -50,195 +52,56 @@ public class Employee {
     private Double grossSalary;
 
     private String expertise;
+
+    @Column(columnDefinition = "int default 0")
     private Integer daysOffTaken;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "team_id")
     private Team employeeTeam; //the team the employee belongs to
 
     @OneToMany(mappedBy = "manager",
-            cascade = CascadeType.ALL,
             fetch = FetchType.EAGER)
     private List<Employee> managedEmployees;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "manager_id")
     private Employee manager;
 
-    @OneToMany(mappedBy = "employee",
-            cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "employee")
     @JsonIgnore
     private List<Salary> salary;
 
-    @OneToOne(mappedBy = "employee",
-            cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "employee")
     @JsonIgnore
     private AccountInformation accountInformation;
 
 
-    public Double getGrossSalary() {
-        return grossSalary;
+    public void setGrossSalary(Double grossSalary) throws BadArgumentException {
+            this.grossSalary = grossSalary;
     }
 
-    public void setGrossSalary(Double grossSalary) throws BusinessException {
-        Double minimumWage = 588.235294118;
-        if (grossSalary < minimumWage) {
-            throw new BusinessException("the minimum employee wage is $589!");
-        }
-        this.grossSalary = grossSalary;
-        //System.out.println("Net salary updated: " + this.netSalary + " -------------------");
-
-    }
-
-    public Integer getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Integer employeeId) {
-        this.employeeId = employeeId;
-    }
-
-
-    public List<Employee> getManagedEmployees() {
-        return managedEmployees;
-    }
-
-    public void setManagedEmployees(List<Employee> managedEmployees) {
-        this.managedEmployees = managedEmployees;
-    }
-
-    public Employee getManager() {
-        return manager;
-    }
-
-    public void setManager(Employee manager) {
-        this.manager = manager;
-    }
-
-
-    public Department getDepartment() {
-        return this.department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
-    public Date getDob() {
-        return dob;
-    }
-
-    public void setDob(Date dob) {
-        this.dob = dob;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public Date getGraduationDate() {
-        return graduationDate;
-    }
-
-    public void setGraduationDate(Date graduationDate) {
-        this.graduationDate = graduationDate;
-    }
-
-    public Team getEmployeeTeam() {
-        return employeeTeam;
-    }
-
-    public void setEmployeeTeam(Team employeeTeam) {
-        this.employeeTeam = employeeTeam;
-    }
-
-    public String getExpertise() {
-        return expertise;
-    }
-
-    public void setExpertise(String expertise) {
-        this.expertise = expertise;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public Long getNationalId() {
-        return nationalId;
-    }
-
-    public void setNationalId(Long nationalId) {
-        this.nationalId = nationalId;
-    }
-
-    public Integer getYearsOfExperience() {
-        return yearsOfExperience;
-    }
-
-    public Integer getDaysOffTaken() {
-        return daysOffTaken;
-    }
-
-    public void setYearsOfExperience(Integer yearsOfExperience) {
-        this.yearsOfExperience = yearsOfExperience;
-    }
-
-    public Degree getDegree() {
-        return degree;
-    }
-
-    public void setDegree(Degree degree) {
-        this.degree = degree;
-    }
-
-    public void setRaise(Double raise) throws BusinessException {
+    public void setRaise(Double raise) throws BadArgumentException {
         if (raise == null) {
             return;
         }
         if (raise >= 0.0) {
             this.raise = raise;
-            return;
         }
-        throw new BusinessException("a raise must be of a positive value!");
     }
 
-    public void setBonus(Double bonus) throws BusinessException {
+    public void setBonus(Double bonus) throws InternalException {
         if (bonus == null) {
             return;
         }
         if (bonus >= 0.0) {
             this.bonus = bonus;
         } else {
-            throw new BusinessException("a bonus must be of a positive value!");
-        }
-    }
-
-    public void applyRaise(Double raise) throws BusinessException {
-        if (raise > 0.0) {
-            this.raise = raise;
-        } else {
-            throw new BusinessException("a raise must be of a positive value!");
+            throw new InternalException("a bonus must be of a positive value!");
         }
     }
 

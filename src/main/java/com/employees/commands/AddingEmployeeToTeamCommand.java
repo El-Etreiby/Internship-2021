@@ -1,23 +1,14 @@
 package com.employees.commands;
 
-public class AddingEmployeeToTeamCommand {
+import lombok.Getter;
+import lombok.Setter;
+
+import java.io.Serializable;
+
+@Getter
+@Setter
+public class AddingEmployeeToTeamCommand implements Serializable {
 
     private Integer employeeId;
     private Integer teamId;
-
-    public Integer getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Integer employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public Integer getTeamId() {
-        return teamId;
-    }
-
-    public void setTeamId(Integer teamId) {
-        this.teamId = teamId;
-    }
 }

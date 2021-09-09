@@ -1,10 +1,12 @@
 package com.employees.errorHandling;
 
-public class EmployeeNotFoundException extends Exception {
-public EmployeeNotFoundException(){
-    super();
-}
-public EmployeeNotFoundException(String message){
-    super(message);
-}
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class EmployeeNotFoundException extends RuntimeException {
+
+    public EmployeeNotFoundException(String message) {
+        super(message);
+    }
 }

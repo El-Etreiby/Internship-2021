@@ -1,6 +1,6 @@
 //package com.employees.repositories;
 //
-//import com.employees.errorHandling.BusinessException;
+//import com.employees.errorHandling.InternalException;
 //import com.employees.models.AccountInformation;
 //import com.employees.models.Degree;
 //import com.employees.models.Employee;
@@ -21,7 +21,7 @@
 //
 //
 //    @Override
-//    public void run(String... args) throws BusinessException, ParseException {
+//    public void run(String... args) throws InternalException, ParseException {
 //        accountInformationRepository.deleteAll();
 //        employeeRepository.deleteAll();
 //        Employee admin = new Employee();

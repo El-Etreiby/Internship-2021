@@ -1,6 +1,5 @@
 package com.employees.controllers;
 
-import com.employees.models.Employee;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

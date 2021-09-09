@@ -1,25 +1,14 @@
 package com.employees.commands;
 
-public class AddingManagerToEmployeeCommand {
+import lombok.Getter;
+import lombok.Setter;
 
+import java.io.Serializable;
+
+@Getter
+@Setter
+public class AddingManagerToEmployeeCommand implements Serializable {
     private Integer employeeId;
-
-    public Integer getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Integer employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public Integer getManagerId() {
-        return managerId;
-    }
-
-    public void setManagerId(Integer managerId) {
-        this.managerId = managerId;
-    }
-
     private Integer managerId;
 
 }

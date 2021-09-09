@@ -18,10 +18,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 public class RestErrorHandler {
 
     protected ResponseEntity<Object> handleMissingServletRequestParameter(
-            MissingServletRequestParameterException ex, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
-        String error = ex.getParameterName() + " parameter is missing";
-
+            MissingServletRequestParameterException ex) {
         ApiError apiError =
                 new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
         return new ResponseEntity<>(
@@ -53,21 +50,27 @@ public class RestErrorHandler {
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    @ExceptionHandler({ SalaryNotFoundException.class })
+    public ResponseEntity<Object> handleSalaryNotFound(
+            SalaryNotFoundException ex, WebRequest request) {
+        ApiError apiError =
+                new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
+        return new ResponseEntity<>(
+                apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
 
 
 
     protected ResponseEntity<Object> handleNoHandlerFoundException(
-            NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+            NoHandlerFoundException ex) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
 
     }
 
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
-            HttpRequestMethodNotSupportedException ex,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request) {
+            HttpRequestMethodNotSupportedException ex) {
         StringBuilder builder = new StringBuilder();
         builder.append(ex.getMethod());
         builder.append(
@@ -81,10 +84,7 @@ public class RestErrorHandler {
     }
 
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
-            HttpMediaTypeNotSupportedException ex,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request) {
+            HttpMediaTypeNotSupportedException ex) {
         StringBuilder builder = new StringBuilder();
         builder.append(ex.getContentType());
         builder.append(" media type is not supported. Supported media types are ");
@@ -96,6 +96,14 @@ public class RestErrorHandler {
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    @ExceptionHandler({ BadArgumentException.class })
+    public ResponseEntity<Object> handleBadArgument(
+            BadArgumentException ex, WebRequest request) {
+        ApiError apiError =
+                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
+        return new ResponseEntity<>(
+                apiError, new HttpHeaders(), apiError.getStatus());
+    }
 
 
     @ExceptionHandler({ Exception.class })

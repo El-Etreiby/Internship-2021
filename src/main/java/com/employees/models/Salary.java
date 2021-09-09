@@ -1,16 +1,15 @@
 package com.employees.models;
 
-
-import com.employees.errorHandling.BusinessException;
-import lombok.Data;
+import com.employees.errorHandling.InternalException;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 
 import javax.persistence.*;
-import java.time.Month;
-import java.time.Year;
 
-@Data
 @Entity
+@Getter
+@Setter
 public class Salary {
     //gross salary would represent the salary before adding
     // or subtracting any values.
@@ -18,7 +17,7 @@ public class Salary {
     @EmbeddedId
     private SalaryId id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "employee_id", insertable = false, updatable = false)
     private Employee employee;
 
@@ -32,15 +31,15 @@ public class Salary {
     private Double leaveDeductions;
     private Double taxes;
 
-    public void setGrossSalary(Double grossSalary) throws BusinessException {
+    public void setGrossSalary(Double grossSalary) throws InternalException {
         Double minimumWage = 588.235294118;
         if (grossSalary < minimumWage) {
-            throw new BusinessException("the minimum employee wage is $589!");
+            throw new InternalException("the minimum employee wage is $589!");
         }
         this.grossSalary = grossSalary;
     }
 
-    public void calculateNetSalary() throws BusinessException {
+    public void calculateNetSalary() throws InternalException {
         Double taxRate = 0.85;
         Double insurance = 500.0;
         Double oneDayDeduction = grossSalary / 30.0;
@@ -66,7 +65,7 @@ public class Salary {
             this.netSalary = 0.0;
     }
 
-    public void setEmployee(Employee employee) throws BusinessException {
+    public void setEmployee(Employee employee) throws InternalException {
         this.employee = employee;
         if (employee.getGrossSalary() != null) {
             this.setGrossSalary(employee.getGrossSalary());
@@ -75,7 +74,7 @@ public class Salary {
             this.bonus=employee.getBonus();
         }
         if(employee.getRaise()!=null){
-            this.raise=raise;
+            this.raise=employee.getRaise();
         }
     }
 
@@ -97,6 +96,5 @@ public class Salary {
         }
 
         return result;
-
     }
 }
