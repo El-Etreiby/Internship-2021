@@ -17,7 +17,7 @@ public class Salary {
     @EmbeddedId
     private SalaryId id;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "employee_id", insertable = false, updatable = false)
     private Employee employee;
 

@@ -2,13 +2,14 @@ package com.employees.controllers;
 
 import com.employees.models.Team;
 import com.employees.services.TeamService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping(path = "/team")
 @RestController
+@AllArgsConstructor
 public class TeamController {
-    @Autowired
     private TeamService teamService;
 
     @PostMapping(path = "") // Map ONLY POST Requests {id}
@@ -28,7 +29,7 @@ public class TeamController {
 
     @PutMapping(path = "/{teamId}") // Map ONLY POST Requests
     @ResponseBody
-    public String updateTeam(@RequestBody String newName,@PathVariable String teamId) throws Exception {
+    public String updateTeam(@RequestBody String newName,@PathVariable String teamId) {
         teamService.updateTeam(newName,Integer.parseInt(teamId));
         return "Team Updated!";
     }

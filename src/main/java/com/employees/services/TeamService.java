@@ -6,24 +6,22 @@ import com.employees.errorHandling.TeamNotFoundException;
 import com.employees.models.Employee;
 import com.employees.models.Team;
 import com.employees.repositories.EmployeeRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.employees.repositories.TeamRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class TeamService {
 
-    @Autowired
     private TeamRepository teamRepository;
-
-    @Autowired
     private EmployeeRepository employeeRepository;
 
-    public String addNewTeam(Team team){
+    public void addNewTeam(Team team){
         Iterable<Team> teams = teamRepository.findAll();
         Iterator<Team> allTeams = teams.iterator();
         while(allTeams.hasNext()){
@@ -32,10 +30,9 @@ public class TeamService {
             }
         }
          teamRepository.save(team);
-        return "Team added successfully!";
     }
 
-    public String removeTeam(Integer teamToBeRemoved) throws Exception {
+    public void removeTeam(Integer teamToBeRemoved) {
         Optional<Team> toBeRemoved = teamRepository.findById(teamToBeRemoved);
         if (toBeRemoved.isPresent()) {
             Iterable<Employee> employees = employeeRepository.findAll();
@@ -49,7 +46,6 @@ public class TeamService {
                 }
             }
             teamRepository.deleteByID(teamToBeRemoved);
-            return "Team removed successfully!";
         }
         else
             throw new TeamNotFoundException("You're trying to delete a non existing team");

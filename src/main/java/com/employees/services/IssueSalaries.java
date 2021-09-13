@@ -5,38 +5,37 @@ import com.employees.models.Salary;
 import com.employees.models.SalaryId;
 import com.employees.repositories.EmployeeRepository;
 import com.employees.repositories.SalaryRepository;
-import com.employees.services.HrService;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
-public class IssueSalaries implements Job {
+@Component
+@AllArgsConstructor
+public class IssueSalaries {
 
-    @Autowired
     private EmployeeRepository employeeRepository;
 
-    @Autowired
     private SalaryRepository salaryRepository;
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    @Override  //executed at 12:00 p.m. at the last day of each month
     @Scheduled(cron = "0 00 12 L * ?", zone = "Africa/Cairo")
-    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    public void execute() {
         try {
             String dateAsString = dateFormat.format(new Date());
             Date date = null;
             date = dateFormat.parse(dateAsString);
             int month = date.getMonth();
             int year = date.getYear();
+
+            //JAVA QUARTUS TEST DATA:
+
+
 //            int month = 9;
 //            int year = 2022;
 
@@ -109,7 +108,7 @@ public class IssueSalaries implements Job {
                     temp.setDaysOffTaken(0);
                     temp.setYearsOfExperience(temp.getYearsOfExperience() + 1);
                 }
-                 employeeRepository.save(temp);
+                employeeRepository.save(temp);
                 System.out.println("employee after issue: " + "\n" + temp);
             }
         } catch (ParseException e) {

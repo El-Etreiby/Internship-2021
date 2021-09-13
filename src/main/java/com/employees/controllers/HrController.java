@@ -1,41 +1,28 @@
 package com.employees.controllers;
 
 import com.employees.DTOs.EmployeeDto;
-import com.employees.errorHandling.InternalException;
 import com.employees.models.*;
 import com.employees.services.DepartmentService;
 import com.employees.services.HrService;
 import com.employees.services.SalaryService;
 import com.employees.services.TeamService;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.impl.StdScheduler;
-import org.quartz.impl.StdSchedulerFactory;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping(path = "/hr")
 public class HrController {
-    @Autowired
     private HrService hrService;
-
-    @Autowired
     private SalaryService salaryService;
-
-    @Autowired
     private TeamService teamService;
-
-    @Autowired
     private DepartmentService departmentService;
 
     private static final Logger log = LoggerFactory.getLogger(HrController.class);
@@ -44,7 +31,7 @@ public class HrController {
 
     @PostMapping(path = "/employee/password/{password}")
     @ResponseBody
-    public String addNewEmployee(@RequestBody Employee employee, @PathVariable String password) throws Exception  //zawed account info
+    public String addNewEmployee(@RequestBody Employee employee, @PathVariable String password)   //zawed account info
     {
         log.info("provided pw: " + password);
         hrService.addNewEmployee(employee, password);
@@ -53,7 +40,7 @@ public class HrController {
 
     @PutMapping(path = "/employee/{id}")
     @ResponseBody
-    public String updateEmployee(@RequestBody Employee employee, @PathVariable String id) throws Exception {
+    public String updateEmployee(@RequestBody Employee employee, @PathVariable String id) {
         EmployeeDto employeeDto = new EmployeeDto(employee);
         log.info("dto: " + employeeDto);
         hrService.updateEmployee(id, employeeDto);
@@ -62,14 +49,14 @@ public class HrController {
 
     @PutMapping(path = "/employee/{employeeId}/role")
     @ResponseBody
-    public String updateEmployeesRole(@PathVariable String employeeId, @RequestBody String role) throws Exception {
+    public String updateEmployeesRole(@PathVariable String employeeId, @RequestBody String role) {
         hrService.updateEmployeeRole(role,Integer.parseInt(employeeId));
         return "Employee role modified successfully!";
     }
 
     @DeleteMapping(path = "/employee/{id}") // Map ONLY POST Requests
     @ResponseBody //search
-    public String removeEmployee(@PathVariable String id) throws Exception {
+    public String removeEmployee(@PathVariable String id) {
         //WHAT ABOUT FKS (manager, managed team, team....) ?????
         hrService.removeEmployee(Integer.parseInt(id));
         return "Employee Removed!";
@@ -77,28 +64,28 @@ public class HrController {
 
     @DeleteMapping(path = "/employee/{id}/manager") // Map ONLY POST Requests
     @ResponseBody //search
-    public String removeEmployeesManager(@PathVariable String id) throws Exception {
+    public String removeEmployeesManager(@PathVariable String id) {
         hrService.removeEmployeesManager(Integer.parseInt(id));
         return "Employee's manager Removed!";
     }
 
     @DeleteMapping(path = "/employee/{id}/team") // Map ONLY POST Requests
     @ResponseBody //search
-    public String removeEmployeesTeam(@PathVariable String id) throws Exception {
+    public String removeEmployeesTeam(@PathVariable String id) {
         hrService.removeEmployeesTeam(Integer.parseInt(id));
         return "Employee's team Removed!";
     }
 
     @DeleteMapping(path = "/employee/{id}/department") // Map ONLY POST Requests
     @ResponseBody //search
-    public String removeEmployeesDepartment(@PathVariable String id) throws Exception {
+    public String removeEmployeesDepartment(@PathVariable String id) {
         hrService.removeEmployeesDepartment(Integer.parseInt(id));
         return "Employee's department Removed!";
     }
 
     @PostMapping(path = "/employee/{employeeId}/team/{teamId}") // Map ONLY POST Requests
     @ResponseBody
-    public String addEmployeeToTeam(@PathVariable String employeeId, @PathVariable String teamId) throws Exception {
+    public String addEmployeeToTeam(@PathVariable String employeeId, @PathVariable String teamId) {
         Integer EmployeeId = Integer.parseInt(employeeId);
         Integer TeamId = Integer.parseInt(teamId);
         hrService.addEmployeeToTeam(EmployeeId, TeamId);
@@ -107,7 +94,7 @@ public class HrController {
 
     @PostMapping(path = "/employee/{employeeId}/department/{departmentId}") // Map ONLY POST Requests
     @ResponseBody
-    public String addEmployeeToDepartment(@PathVariable String employeeId, @PathVariable String departmentId) throws Exception {
+    public String addEmployeeToDepartment(@PathVariable String employeeId, @PathVariable String departmentId) {
         Integer intEmployeeId = Integer.parseInt(employeeId);
         Integer intDepartmentId = Integer.parseInt(departmentId);
         hrService.addEmployeeToDepartment(intEmployeeId, intDepartmentId);
@@ -116,7 +103,7 @@ public class HrController {
 
     @PostMapping(path = "/employee/{employeeId}/manager/{managerId}") // Map ONLY POST Requests
     @ResponseBody
-    public String addManagerToEmployee(@PathVariable String employeeId, @PathVariable String managerId) throws Exception {
+    public String addManagerToEmployee(@PathVariable String employeeId, @PathVariable String managerId) {
         Integer intEmployeeId = Integer.parseInt(employeeId);
         Integer intManagerId = Integer.parseInt(managerId);
         hrService.addManagerToEmployee(intEmployeeId, intManagerId);
@@ -125,7 +112,7 @@ public class HrController {
 
     @GetMapping(path = "/employee/{employeeId}")
     @ResponseBody
-    public String getEmployee(@PathVariable String employeeId) throws Exception {
+    public String getEmployee(@PathVariable String employeeId) {
         Integer intEmployeeId = Integer.parseInt(employeeId);
         String result = hrService.getEmployee(intEmployeeId).toString();
         System.out.println(result);
@@ -156,7 +143,7 @@ public class HrController {
 
     @GetMapping(path = "/employeesUnderManager/{managerId}")
     @ResponseBody
-    public ArrayList<String> getEmployeesUnderManager(@PathVariable String managerId) throws Exception {
+    public ArrayList<String> getEmployeesUnderManager(@PathVariable String managerId) {
 
         List<EmployeeDto> dtos = hrService.getEmployeesUnderManager(Integer.parseInt(managerId));
         return this.addDtosToArrayList(dtos);
@@ -165,7 +152,7 @@ public class HrController {
 
     @GetMapping(path = "/allEmployeesUnderManager/{managerId}")
     @ResponseBody
-    public ArrayList<String> getAllEmployeesUnderManager(@PathVariable String managerId) throws Exception {
+    public ArrayList<String> getAllEmployeesUnderManager(@PathVariable String managerId) {
 
         List<EmployeeDto> dtos = hrService.getAllEmployeesUnderManager(Integer.parseInt(managerId));
         System.out.println(dtos);

@@ -4,6 +4,7 @@ import com.employees.models.Salary;
 import com.employees.models.SalaryId;
 import com.employees.services.EmployeeService;
 import com.employees.services.SalaryService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,12 +12,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/employee")
+@AllArgsConstructor
 public class EmployeeController {
 
-    @Autowired
-    private EmployeeService employeeService;
 
-    @Autowired
+    private EmployeeService employeeService;
     private SalaryService salaryService;
 
     @PostMapping(path = "/vacation")

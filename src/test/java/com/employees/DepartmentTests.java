@@ -3,17 +3,14 @@ package com.employees;
 
 import com.employees.errorHandling.BadArgumentException;
 import com.employees.errorHandling.DepartmentNotFoundException;
-import com.employees.errorHandling.TeamNotFoundException;
-import com.employees.models.AccountInformation;
 import com.employees.models.Department;
-import com.employees.models.Team;
-import com.employees.repositories.AccountInformationRepository;
 import com.employees.repositories.TeamRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.junit.Before;
@@ -28,9 +25,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;

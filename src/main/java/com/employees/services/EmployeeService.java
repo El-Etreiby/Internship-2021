@@ -8,6 +8,7 @@ import com.employees.models.SalaryId;
 import com.employees.repositories.AccountInformationRepository;
 import com.employees.repositories.EmployeeRepository;
 import com.employees.repositories.SalaryRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -20,15 +21,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class EmployeeService {
 
-    @Autowired
     private EmployeeRepository employeeRepository;
-
-    @Autowired
     private SalaryRepository salaryRepository;
-
-    @Autowired
     private AccountInformationRepository accountInformationRepository;
 
     public String requestVacation(Integer employeeId) {

@@ -7,6 +7,7 @@ import com.employees.models.Salary;
 import com.employees.models.SalaryId;
 import com.employees.repositories.EmployeeRepository;
 import com.employees.repositories.SalaryRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +15,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class SalaryService {
-
-    @Autowired
     private SalaryRepository salaryRepository;
-
-    @Autowired
     private EmployeeRepository employeeRepository;
 
     public Salary getSomeSalaryHistory(SalaryId salaryId) throws EmployeeNotFoundException {

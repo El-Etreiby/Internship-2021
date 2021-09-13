@@ -6,8 +6,8 @@ import com.employees.errorHandling.DepartmentNotFoundException;
 import com.employees.errorHandling.InternalException;
 import com.employees.models.Department;
 import com.employees.models.Employee;
-import com.employees.models.Team;
 import com.employees.repositories.EmployeeRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.employees.repositories.DepartmentRepository;
@@ -16,14 +16,12 @@ import java.util.Iterator;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class DepartmentService {
-    @Autowired
     private DepartmentRepository departmentRepository;
-
-    @Autowired
     private EmployeeRepository employeeRepository;
 
-    public String addNewDepartment(Department department){
+    public void addNewDepartment(Department department){
         Iterable<Department> departments = departmentRepository.findAll();
         Iterator<Department> allDepartments = departments.iterator();
         while(allDepartments.hasNext()){
@@ -32,10 +30,9 @@ public class DepartmentService {
             }
         }
         departmentRepository.save(department);
-        return "Department added successfully!";
     }
 
-    public String removeDepartment(Integer departmentToBeRemoved) throws Exception {
+    public void removeDepartment(Integer departmentToBeRemoved) {
         Optional<Department> toBeRemoved = departmentRepository.findById(departmentToBeRemoved);
         if (toBeRemoved.isPresent()) {
             Iterable<Employee> employees = employeeRepository.findAll();
@@ -49,7 +46,6 @@ public class DepartmentService {
                 }
             }
             departmentRepository.deleteByID(departmentToBeRemoved);
-            return "Department removed successfully!";
         }
         else
             throw new DepartmentNotFoundException("You're trying to delete a non existing department");

@@ -26,8 +26,6 @@ public class EmployeeDto {
     private String expertise;
     private String gender;
 
-    public void setYearsOfExperience(Integer yearsOfExperience) {
-    }
 
     public EmployeeDto(Employee employee) {
         this.dob = employee.getDob();

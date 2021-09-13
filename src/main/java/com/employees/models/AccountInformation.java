@@ -23,7 +23,7 @@ public class AccountInformation {
     @Column(nullable=false, columnDefinition = "varchar(255) default 'EMPLOYEE'")
     private String role;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "employee_id", nullable=false)
     private Employee employee;
 

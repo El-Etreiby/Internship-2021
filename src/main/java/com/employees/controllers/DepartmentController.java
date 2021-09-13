@@ -2,14 +2,16 @@ package com.employees.controllers;
 
 import com.employees.models.Department;
 import com.employees.services.DepartmentService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping(path = "/department")
 public class DepartmentController {
 
-    @Autowired
+
     private DepartmentService departmentService;
 
     @PostMapping(path = "")
@@ -27,7 +29,7 @@ public class DepartmentController {
 
     @PutMapping(path = "/{departmentId}")
     @ResponseBody
-    public String updateDepartment(@PathVariable String departmentId, @RequestBody String newName) throws Exception {
+    public String updateDepartment(@PathVariable String departmentId, @RequestBody String newName) {
         departmentService.updateDepartment(newName,Integer.parseInt(departmentId));
         return "Department Updated!";
     }
