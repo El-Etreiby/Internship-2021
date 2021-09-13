@@ -16,4 +16,9 @@ public class Department {
 
     @Column(unique = true, nullable = false)
     private String departmentName;
+
+    public String toString(){
+        return "department ID: " + this.departmentId + "\n"
+                + "department name: " + this.departmentName + "\n";
+    }
 }

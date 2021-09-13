@@ -16,7 +16,6 @@ public class TeamController {
     public String addNewTeam(@RequestBody Team team)
     // @RequestParam means it is a parameter from the GET or POST request
     {
-        //WHAT ABOUT FKS (manager, managed team, team....) ?????
         teamService.addNewTeam(team);
         return "Team Saved!";
     }
@@ -25,6 +24,13 @@ public class TeamController {
     public String removeTeam(@RequestBody Integer teamToBeRemoved) throws Exception {
         teamService.removeTeam(teamToBeRemoved);
         return "Team Removed!";
+    }
+
+    @PutMapping(path = "/{teamId}") // Map ONLY POST Requests
+    @ResponseBody
+    public String updateTeam(@RequestBody String newName,@PathVariable String teamId) throws Exception {
+        teamService.updateTeam(newName,Integer.parseInt(teamId));
+        return "Team Updated!";
     }
 
 

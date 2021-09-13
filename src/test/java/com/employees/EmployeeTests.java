@@ -72,15 +72,14 @@ public class EmployeeTests {
     }
 
     @Test
-    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
+   // @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
     public void test_change_employee_password() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/employee/password")
                         .with(httpBasic("a.a", "123"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString("234")))
+                        .content("234"))
                 .andExpect(status().isOk());
 
         Optional<AccountInformation> account = accountInformationRepository.findByEmployeeId(1);

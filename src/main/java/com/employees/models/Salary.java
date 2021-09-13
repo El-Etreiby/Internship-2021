@@ -73,8 +73,14 @@ public class Salary {
         if(employee.getBonus()!=null){
             this.bonus=employee.getBonus();
         }
+        else{
+            this.bonus=0.0;
+        }
         if(employee.getRaise()!=null){
             this.raise=employee.getRaise();
+        }
+        else{
+            this.raise=0.0;
         }
     }
 
@@ -90,10 +96,11 @@ public class Salary {
                 + "Bonus: " + this.bonus + "\n"
                 + "Raise: " + this.raise + "\n"
                 + "taxes: " + this.taxes + "\n"
-                + "Leave deductions: " + this.leaveDeductions;
+                + "Leave deductions: " + this.leaveDeductions + "\n";
         if(this.netSalary!=null){
             result += "Net salary:  " + this.netSalary + "\n";
         }
+        result+= "The net salary is calculated by the following equation:  " + "\n" + "(grossSalary + bonus + raise - insurance - leaveDeductions) * taxRate";
 
         return result;
     }

@@ -7,6 +7,10 @@ import com.employees.services.DepartmentService;
 import com.employees.services.HrService;
 import com.employees.services.SalaryService;
 import com.employees.services.TeamService;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdScheduler;
+import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -220,12 +224,5 @@ public class HrController {
             result.add(dto.toString());
         }
         return result;
-    }
-
-    @Scheduled(fixedRateString = "2628000000") //2628000000 = month
-    public void issueSalaries() throws ParseException {
-        String dateAsString = dateFormat.format(new Date());
-        Date date = dateFormat.parse(dateAsString);
-        hrService.issueSalaries(date.getMonth(), date.getYear());
     }
 }

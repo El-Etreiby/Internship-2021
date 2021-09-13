@@ -144,6 +144,41 @@ public class HrTests {
     }
 
     @Test
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForBonusTest.xml")
+    public void test_add_bonus() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/hr/employee/1/bonus/1000")
+                        .with(httpBasic("a.a", "123"))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
+    public void test_add_bonus_non_existing_employee() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/hr/employee/11/bonus/1000")
+                        .with(httpBasic("a.a", "123"))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof EmployeeNotFoundException))
+                .andExpect(result -> assertEquals("This employee does not exist", result.getResolvedException().getMessage()));
+    }
+
+    @Test
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
+    public void test_add_bonus_invalid_entry() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/hr/employee/1/bonus/-1000")
+                        .with(httpBasic("a.a", "123"))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof BadArgumentException))
+                .andExpect(result -> assertEquals("bonus must be of a positive value", result.getResolvedException().getMessage()));
+    }
+
+    @Test
     @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
     public void test_raise_non_existing_employee_salary() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
@@ -355,7 +390,6 @@ public class HrTests {
 //        newEmployee.setGraduationDate(new SimpleDateFormat("dd/MM/yyyy").parse("1/1/2018"));
         ObjectMapper objectMapper = new ObjectMapper();
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        String result = encoder.encode("123");
 //       log.info(String.valueOf(encoder.matches("123",result)));
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/hr/employee/password/123")
@@ -364,7 +398,7 @@ public class HrTests {
                         .content(objectMapper.writeValueAsString(newEmployee)))
                 .andDo(print())
                 .andExpect(status().isOk());
-        Optional<AccountInformation> acc = accountInformationRepository.findByEmployeeId(5);
+        Optional<AccountInformation> acc = accountInformationRepository.findByEmployeeId(6);
         if (acc.isPresent()) {
             log.info("present");
             assertThat(encoder.matches("12", acc.get().getPassword())).isFalse();
@@ -404,6 +438,19 @@ public class HrTests {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @Test
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
+    public void test_delete_top_manager() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/hr/employee/1")
+                        .with(httpBasic("a.a", "123")))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof BadArgumentException))
+                .andExpect(result -> assertEquals("You can't delete a top manager", result.getResolvedException().getMessage()));
+    }
+
 
     @Test
     @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
@@ -467,10 +514,10 @@ public class HrTests {
     public void test_add_employee_to_non_existing_team() throws Exception {
         AddingEmployeeToTeamCommand command = new AddingEmployeeToTeamCommand();
         command.setEmployeeId(1);
-        command.setTeamId(113);
+        command.setTeamId(114);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/hr/employee/1/team/113")
+                        .post("/hr/employee/1/team/114")
                         .with(httpBasic("a.a", "123"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
@@ -516,10 +563,10 @@ public class HrTests {
     public void test_add_employee_to_non_existing_department() throws Exception {
         AddingEmployeeToDepartmentCommand command = new AddingEmployeeToDepartmentCommand();
         command.setEmployeeId(1);
-        command.setDepartmentId(110);
+        command.setDepartmentId(109);
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/hr/employee/1/department/110")
+                        .post("/hr/employee/1/department/109")
                         .with(httpBasic("a.a", "123"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))

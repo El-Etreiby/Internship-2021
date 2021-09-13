@@ -36,8 +36,9 @@ public class Employee {
     @Column(nullable = false)
     private Degree degree;
 
-
+    @Column(columnDefinition = "double default 0")
     private Double bonus;
+    @Column(columnDefinition = "double default 0")
     private Double raise;   //represents last month's raise (i.e. restarted at the end of each month)
 
     @Column(nullable = false)
@@ -127,6 +128,7 @@ public class Employee {
                 + "Years of experience: " + this.yearsOfExperience + "\n"
                 + "Days Off taken this year: " + this.daysOffTaken + "\n"
                 + "Bonus for this month: " + this.bonus + "\n"
+                + "raise for this month: " + this.raise +"\n"
                 + "DoB: " + this.dob + "\n"
                 + "DoG: " + this.graduationDate + "\n"
                 + "Gender: " + this.gender + "\n"

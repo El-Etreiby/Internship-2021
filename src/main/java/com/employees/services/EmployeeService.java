@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,50 +50,12 @@ public class EmployeeService {
 
     }
 
-    public String changeUsername(String newUsername) throws BadArgumentException {
-        Optional<AccountInformation> duplicate = accountInformationRepository.findByUsername(newUsername);
-        if(duplicate.isPresent()){
-            throw new BadArgumentException("this username already exists");
-        }
-        String username = this.getUsername();
-        Optional<AccountInformation> account = accountInformationRepository.findByUsername(username);
- //       System.out.println("OLD: " + username + account.isPresent());
-        if (account.isPresent()) {
-            AccountInformation updatedAccount = account.get();
-            accountInformationRepository.deleteByUsername(username);
-            Optional<AccountInformation> oldAccount = accountInformationRepository.findByUsername(username);
-            System.out.println("oldA : " + oldAccount.isPresent());
-            updatedAccount.setUsername(newUsername);
-            accountInformationRepository.save(updatedAccount);
-            return "username updated successfully!";
-        }
-        return "failed to update username";
-    }
-
     public String getUsername() {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
         return authentication.getName();
     }
 
-//    public Salary getSomeSalaryHistory(SalaryId salaryId) throws EmployeeNotFoundException, BadArgumentException, InternalException, SalaryNotFoundException {
-//        Optional<AccountInformation> account = accountInformationRepository.findByUsername(this.getUsername());
-//        if (!account.isPresent()) {
-//            throw new BadArgumentException("account does not exist");
-//        }
-//        Optional<Employee> employee = employeeRepository.findById(salaryId.getEmployee_id());
-//        if (!employee.isPresent()) {
-//            throw new EmployeeNotFoundException("this employee does not exist");
-//        }
-//        if (account.get().getEmployee().getEmployeeId() != employee.get().getEmployeeId()) {
-//            throw new InternalException("you're only allowed to view your own salary");
-//        }
-//        Optional<Salary> salary = salaryRepository.findById(salaryId);
-//        if (!salary.isPresent()) {
-//            throw new SalaryNotFoundException("this employee was not paid in the provided date");
-//        }
-//        return salary.get();
-//    }
 
     public List<Salary> getAllSalaryHistory() throws EmployeeNotFoundException, BadArgumentException, InternalException {
         Optional<AccountInformation> account = accountInformationRepository.findByUsername(this.getUsername());
@@ -132,29 +96,13 @@ public class EmployeeService {
         //       System.out.println("OLD: " + username + account.isPresent());
         if (account.isPresent()) {
             AccountInformation updatedAccount = account.get();
-            updatedAccount.setPassword(newPassword);
+            PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+            String encryptedPassword = encoder.encode(newPassword);
+            updatedAccount.setPassword(encryptedPassword);
             accountInformationRepository.save(updatedAccount);
             return "password updated successfully!";
         }
         return "failed to update password";
     }
 
-//    public Salary getSomeSalaryHistory(String month, String year) {
-//        String username = this.getUsername();
-//        Optional<AccountInformation> account = accountInformationRepository.findByUsername(username);
-//        //       System.out.println("OLD: " + username + account.isPresent());
-//        if (account.isPresent()) {
-//            AccountInformation acc = account.get();
-//            SalaryId salaryId = new SalaryId();
-//            salaryId.setYear(Integer.parseInt(year));
-//            salaryId.setMonth(Integer.parseInt(month));
-//            salaryId.setEmployee_id(acc.getEmployee().getEmployeeId());
-//            Optional<Salary> salary = salaryRepository.findById(salaryId);
-//            if(!salary.isPresent()){
-//                throw new SalaryNotFoundException("this employee was not paid in the provided date");
-//            }
-//            return salary.get();
-//        }
-//        throw new SalaryNotFoundException("this employee was not paid in the provided date");
-//    }
 }

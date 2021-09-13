@@ -6,6 +6,7 @@ import com.employees.models.*;
 import com.employees.repositories.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -121,7 +122,7 @@ public class HrService {
             throw new EmployeeNotFoundException("You're trying to delete a non existing employee");
         }
         if (toBeRemoved.get().getManager() == null) {
-            throw new EmployeeNotFoundException("You can't delete a top manager");
+            throw new BadArgumentException("You can't delete a top manager");
         }
         List<Employee> managedEmployees = toBeRemoved.get().getManagedEmployees();
         Employee newManager = toBeRemoved.get().getManager();
@@ -181,7 +182,6 @@ public class HrService {
 
     @Transactional
     public void updateEmployee(String employeeId, EmployeeDto employee) throws EmployeeNotFoundException {
-        log.info("updating in service! EMPLOYEE: " + employee);
         Optional<Employee> toBeUpdated = employeeRepository.findById(Integer.parseInt(employeeId));
         if (!toBeUpdated.isPresent()) {
             throw new EmployeeNotFoundException("This employee does not exist");
@@ -370,6 +370,9 @@ public class HrService {
         if (!employee.isPresent()) {
             throw new EmployeeNotFoundException("This employee does not exist");
         }
+        if(bonus < 0.0){
+            throw new BadArgumentException("bonus must be of a positive value");
+        }
         employee.get().setBonus(bonus);
         employeeRepository.save(employee.get());
 
@@ -388,7 +391,9 @@ public class HrService {
         employeeRepository.save(toBeUpdated);
     }
 
+    @Scheduled(cron = "0 00 12 L * ?", zone = "Africa/Cairo")
     public void issueSalaries(int month, int year) {
+
         Iterable<Employee> employee = employeeRepository.findAll();
         Iterator<Employee> employees = employee.iterator();
         Employee temp;
@@ -403,6 +408,7 @@ public class HrService {
             newSalary.setId(salaryId);
             newSalary.calculateNetSalary();
             salaryRepository.save(newSalary);
+            log.info("salary for employee " + salaryId.getEmployee_id() + ": " + "\n" + newSalary);
             temp.setBonus(0.0);
             temp.setGrossSalary(temp.getGrossSalary() + temp.getRaise());
             temp.setRaise(0.0);
@@ -418,7 +424,6 @@ public class HrService {
             }
             employeeRepository.save(temp);
         }
-
     }
 
     public void updateEmployeeRole(String role, int employeeId) {

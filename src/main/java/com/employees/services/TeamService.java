@@ -1,6 +1,8 @@
 package com.employees.services;
 
+import com.employees.errorHandling.BadArgumentException;
 import com.employees.errorHandling.InternalException;
+import com.employees.errorHandling.TeamNotFoundException;
 import com.employees.models.Employee;
 import com.employees.models.Team;
 import com.employees.repositories.EmployeeRepository;
@@ -39,14 +41,27 @@ public class TeamService {
             Iterable<Employee> employees = employeeRepository.findAll();
             Iterator<Employee> allEmployees = employees.iterator();
             while(allEmployees.hasNext()){
-                if(allEmployees.next().getEmployeeTeam()!=null && allEmployees.next().getEmployeeTeam().getTeamId()==teamToBeRemoved){
-                    throw new InternalException("this team has members in it and cannot be deleted");
+                Employee temp = allEmployees.next();
+                System.out.println("next employee: " + temp);
+                System.out.println(temp.getEmployeeTeam()==null);
+                if(temp.getEmployeeTeam()!=null && temp.getEmployeeTeam().getTeamId()==teamToBeRemoved){
+                    throw new BadArgumentException("this team has members in it and cannot be deleted");
                 }
             }
-            teamRepository.deleteById(teamToBeRemoved);
+            teamRepository.deleteByID(teamToBeRemoved);
             return "Team removed successfully!";
         }
         else
-            throw new InternalException("You're trying to delete a non existing team");
+            throw new TeamNotFoundException("You're trying to delete a non existing team");
+    }
+
+    public void updateTeam(String newTeamName, Integer teamId) {
+        Optional<Team> toBeUpdated = teamRepository.findById(teamId);
+        if (!toBeUpdated.isPresent()) {
+            throw new TeamNotFoundException("you're trying to update a non existing team");
+        }
+        Team team = toBeUpdated.get();
+        team.setTeamName(newTeamName);
+        teamRepository.save(team);
     }
 }
