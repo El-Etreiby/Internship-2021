@@ -1,6 +1,7 @@
 package com.employees.controllers;
 
 import com.employees.DTOs.EmployeeDto;
+import com.employees.DTOs.roleDto;
 import com.employees.models.*;
 import com.employees.services.DepartmentService;
 import com.employees.services.HrService;
@@ -49,8 +50,8 @@ public class HrController {
 
     @PutMapping(path = "/employee/{employeeId}/role")
     @ResponseBody
-    public String updateEmployeesRole(@PathVariable String employeeId, @RequestBody String role) {
-        hrService.updateEmployeeRole(role,Integer.parseInt(employeeId));
+    public String updateEmployeesRole(@PathVariable String employeeId, @RequestBody roleDto role) {
+        hrService.updateEmployeeRole(role.getRole(),Integer.parseInt(employeeId));
         return "Employee role modified successfully!";
     }
 

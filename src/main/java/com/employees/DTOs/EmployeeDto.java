@@ -25,6 +25,8 @@ public class EmployeeDto {
     private Integer departmentId;
     private String expertise;
     private String gender;
+    private Double raise;
+    private Double bonus;
 
 
     public EmployeeDto(Employee employee) {
@@ -40,6 +42,8 @@ public class EmployeeDto {
         this.grossSalary = employee.getGrossSalary();
         this.gender = employee.getGender();
         this.expertise = employee.getExpertise();
+        this.raise=employee.getRaise();
+        this.bonus=employee.getBonus();
         if (employee.getManager() != null)
             this.managerId = employee.getManager().getEmployeeId();
         if (employee.getEmployeeTeam() != null)
@@ -62,7 +66,9 @@ public class EmployeeDto {
                 + "DoG: " + this.graduationDate + "\n"
                 + "Gender: " + this.gender + "\n"
                 + "Gross salary: " + this.grossSalary + "\n"
-                + "Expertise: " + this.expertise + "\n";
+                + "Expertise: " + this.expertise + "\n"
+        + "Raise for this month: " + this.raise + "\n"
+                + "Bonus for this month: " + this.bonus + "\n";
         if (this.departmentId != null)
             result += "Department ID: " + this.departmentId + "\n";
         if (this.managerId != null)

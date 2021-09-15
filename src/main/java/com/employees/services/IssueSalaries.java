@@ -22,11 +22,10 @@ public class IssueSalaries {
 
     private SalaryRepository salaryRepository;
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    @Scheduled(cron = "0 00 12 L * ?", zone = "Africa/Cairo")
-    public void execute() {
-        try {
+
+    public static Salary issueSalary(Employee employee) throws ParseException {
             String dateAsString = dateFormat.format(new Date());
             Date date = null;
             date = dateFormat.parse(dateAsString);
@@ -75,11 +74,10 @@ public class IssueSalaries {
 //            employees.add(employee2);
 
 
-            Iterable<Employee> employee = employeeRepository.findAll();
-            Iterator<Employee> employees = employee.iterator();
+//            Iterable<Employee> employee = employeeRepository.findAll();
+//            Iterator<Employee> employees = employee.iterator();
             Employee temp;
-            while(employees.hasNext()) {
-                temp = employees.next();
+                temp = employee;
                 System.out.println("employee before issue: " + "\n" + temp);
                 SalaryId salaryId = new SalaryId();
                 salaryId.setEmployee_id(temp.getEmployeeId());
@@ -89,33 +87,10 @@ public class IssueSalaries {
                 newSalary.setEmployee(temp);
                 newSalary.setId(salaryId);
                 newSalary.calculateNetSalary();
-                salaryRepository.save(newSalary);
+//                salaryRepository.save(newSalary);
                 System.out.println("salary for employee " + salaryId.getEmployee_id() + ": " + "\n" + newSalary);
-                temp.setBonus(0.0);
-                if (temp.getRaise() == null) {
-                    temp.setRaise(0.0);
-                }
-                // System.out.println("g: " + temp.getGrossSalary() + ". r: " + temp.getRaise());
-                temp.setGrossSalary(temp.getGrossSalary() + temp.getRaise());
-                temp.setRaise(0.0);
-                if (temp.getYearsOfExperience() < 10 && temp.getDaysOffTaken() > 21) {
-                    temp.setDaysOffTaken(21);
-                }
-                if (temp.getYearsOfExperience() > 10 && temp.getDaysOffTaken() > 30) {
-                    temp.setDaysOffTaken(30);
-                }
-                if (month == 12) {
-                    temp.setDaysOffTaken(0);
-                    temp.setYearsOfExperience(temp.getYearsOfExperience() + 1);
-                }
-                employeeRepository.save(temp);
-                System.out.println("employee after issue: " + "\n" + temp);
+            return newSalary;
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
-
-    }
 
 }

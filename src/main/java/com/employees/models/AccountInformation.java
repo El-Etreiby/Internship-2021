@@ -30,4 +30,10 @@ public class AccountInformation {
     public void setRole(String role){
         this.role = role;
     }
+
+    public String toString(){
+        return "username: " + this.username + "\n"
+                +"password: " + this.password + "\n"
+                +"role: " + this.role;
+    }
 }

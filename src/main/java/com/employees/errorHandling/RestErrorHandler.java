@@ -2,6 +2,7 @@ package com.employees.errorHandling;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,12 @@ public class RestErrorHandler {
         return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
+
+    @ExceptionHandler(ConversionFailedException.class)
+    public ResponseEntity<String> handleConflict(RuntimeException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({ DepartmentNotFoundException.class })
     public ResponseEntity<Object> handleDepartmentNotFound(
             DepartmentNotFoundException ex, WebRequest request) {
@@ -99,8 +106,9 @@ public class RestErrorHandler {
     @ExceptionHandler({ BadArgumentException.class })
     public ResponseEntity<Object> handleBadArgument(
             BadArgumentException ex, WebRequest request) {
+        log.info(ex.toString());
         ApiError apiError =
-                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
+                new ApiError(HttpStatus.BAD_REQUEST, ex.toString());
         return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }

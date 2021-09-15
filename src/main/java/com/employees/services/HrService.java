@@ -32,6 +32,18 @@ public class HrService {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public void addNewEmployee(Employee employee, String providedPassword) throws BadArgumentException {
+        if(employee.getGender().equals(null)){
+            throw new BadArgumentException("Enter a value for the employee's gender");
+        }
+        if(employee.getDegree().equals(null)){
+            throw new BadArgumentException("Enter a value for the employee's degree");
+        }
+        if(!employee.getDegree().toString().equals("FRESH") &&
+                !employee.getDegree().toString().equals("INTERMEDIATE") &&
+                !employee.getDegree().toString().equals("SENIOR") &&
+                !employee.getDegree().toString().equals("ARCHITECT")){
+            throw new BadArgumentException("an employees degree can only be FRESH, INTERMEDIATE, SENIOR, or ARCHITECT");
+        }
         if ( !(employee.getGender().equals("male") || employee.getGender().equals("female")) ) {
             throw new BadArgumentException("an employee's gender can only be male (represented as 'male') or female (represented as 'female')");
         }
@@ -42,12 +54,16 @@ public class HrService {
             for (int i = 0; i < firstName.length(); i++)
                 if (!firstName.matches("[a-zA-Z]+"))
                     throw new BadArgumentException("an employee's first name should consist of only letters");
+        }else{
+            throw new BadArgumentException("Enter a value for the employee's first name");
         }
         if (employee.getLastName() != null) {
             lastName = employee.getLastName();
             for (int i = 0; i < lastName.length(); i++)
                 if (!lastName.matches("[a-zA-Z]+"))
                     throw new BadArgumentException("an employee's last name should consist of only letters");
+        }else{
+            throw new BadArgumentException("Enter a value for the employee's last name");
         }
         if(employee.getNationalId()==null){
             throw new BadArgumentException("insert a value for the national ID");
@@ -73,6 +89,7 @@ public class HrService {
                 throw new BadArgumentException("Enter a value less than 2021 or more than 1900 for the date of birth ");
             }
         }
+
         AccountInformation accountInformation = new AccountInformation();
         String username = "";
         accountInformation.setEmployee(employee);
@@ -110,7 +127,6 @@ public class HrService {
         accountInformation.setUsername(username);
         employeeRepository.save(employee);
         accountInformation.setEmployee(employee);
-        System.out.println("Creating and saving employee " + employee);
         accountInformationRepository.save(accountInformation);
     }
 
@@ -119,7 +135,7 @@ public class HrService {
         if (!toBeRemoved.isPresent()) {
             throw new EmployeeNotFoundException("You're trying to delete a non existing employee");
         }
-        if (toBeRemoved.get().getManager() == null) {
+        if (toBeRemoved.get().getManager() == null && toBeRemoved.get().getManagedEmployees()!=null && !(toBeRemoved.get().getManagedEmployees().isEmpty())) {
             throw new BadArgumentException("You can't delete a top manager");
         }
         List<Employee> managedEmployees = toBeRemoved.get().getManagedEmployees();
@@ -212,6 +228,13 @@ public class HrService {
             }
             modified.setNationalId(employee.getNationalId());
         }
+        if(employee.getDegree() != null &&
+                !employee.getDegree().toString().equals("FRESH") &&
+                !employee.getDegree().toString().equals("INTERMEDIATE") &&
+                !employee.getDegree().toString().equals("SENIOR") &&
+                !employee.getDegree().toString().equals("ARCHITECT")){
+            throw new BadArgumentException("an employees degree can only be FRESH, INTERMEDIATE, SENIOR, or ARCHITECT");
+        }
         if (employee.getDepartmentId() != null) {
             log.info("department != null");
             Optional<Department> department = departmentRepository.findById(employee.getDepartmentId());
@@ -240,7 +263,7 @@ public class HrService {
             }
         }
         if (employee.getGraduationDate() != null) {
-            if (employee.getGraduationDate().getYear() < 1900 || employee.getGraduationDate().getYear() > 2021) {
+            if (employee.getGraduationDate().getYear() < 0 || employee.getGraduationDate().getYear() > 121) {
                 throw new BadArgumentException("Enter a value less than 2021 or more than 1900 for the date of graduation ");
             }
             modified.setGraduationDate(employee.getGraduationDate());
@@ -439,10 +462,11 @@ public class HrService {
             throw new EmployeeNotFoundException("This employee does not exist");
         }
         if(!role.equals("EMPLOYEE") && !role.equals("ADMIN")){
-            throw new BadArgumentException("'EMPLOYEE' and 'ADMIN' are the only valid roles in the system");
+            throw new BadArgumentException("'EMPLOYEE' and 'ADMIN' are the only valid roles in the system. You entered '" + role + "'");
         }
         AccountInformation account = toBeUpdated.get();
         account.setRole(role);
+//        System.out.println(account);
         accountInformationRepository.save(account);
     }
 

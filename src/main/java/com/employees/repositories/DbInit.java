@@ -7,6 +7,8 @@ import com.employees.models.Employee;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -35,7 +37,9 @@ public class DbInit implements CommandLineRunner {
         employeeRepository.save(admin);
         AccountInformation accountInformation = new AccountInformation();
         accountInformation.setEmployee(admin);
-        accountInformation.setPassword("123");
+        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        String encryptedPassword = encoder.encode("123");
+        accountInformation.setPassword(encryptedPassword);
         accountInformation.setRole("ADMIN");
         accountInformation.setUsername("a.a");
 //        Optional<Employee> emp = employeeRepository.findById(9);
@@ -55,7 +59,10 @@ public class DbInit implements CommandLineRunner {
         AccountInformation accountInformation1 = new AccountInformation();
         accountInformation1.setEmployee(employee);
         accountInformation1.setUsername("b.b");
-        accountInformation1.setPassword("123");
+
+
+        String encryptedPassword1 = encoder.encode("123");
+        accountInformation1.setPassword(encryptedPassword1);
         accountInformation1.setRole("EMPLOYEE");
         accountInformationRepository.save(accountInformation1);
     }

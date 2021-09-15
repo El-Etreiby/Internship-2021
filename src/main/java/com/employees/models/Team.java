@@ -15,7 +15,7 @@ public class Team {
     private int teamId;
 
     @Column(unique = true, nullable = false)
-    private String teamName;
+    private String teamName;//unique not working
 
     public String toString(){
         return "team ID: " + this.teamId + "\n"
