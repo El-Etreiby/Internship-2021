@@ -21,9 +21,8 @@ public class EmployeeController {
 
     @PostMapping(path = "/vacation")
     @ResponseBody
-    public String requestVacation(@RequestBody Integer employeeId) {
-        return employeeService.requestVacation(employeeId);
-
+    public String requestVacation() {
+        return employeeService.requestVacation();
     }
 
 //    @PutMapping(path = "/username")
@@ -59,6 +58,13 @@ public class EmployeeController {
          int daysOff = employeeService.getDaysOffByDate(month, year);
         System.out.println("days of taken in month: " + month + ", year: " + year + " = " + daysOff);
         return "days of taken in month: " + month + ", year: " + year + " = " + daysOff;
+    }
+
+    @GetMapping(path = "/daysOff")
+    @ResponseBody
+    public String getDaysOff() {
+        int daysOff = employeeService.getDaysOff();
+        return "days of taken this year: " + daysOff;
     }
 
 }

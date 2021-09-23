@@ -1,6 +1,7 @@
 package com.employees;
 
 
+import com.employees.DTOs.RoleDto;
 import com.employees.commands.AddingEmployeeToDepartmentCommand;
 import com.employees.commands.AddingEmployeeToTeamCommand;
 import com.employees.commands.AddingManagerToEmployeeCommand;
@@ -464,13 +465,15 @@ public class HrTests {
     @Test
     @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/expectedDataForModifyingRoleTest.xml")
     public void test_modify_role() throws Exception {
-        String admin = "ADMIN";
+        RoleDto role = new RoleDto();
+        role.setRole("ADMIN");
+        //String admin = "ADMIN";
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/hr/employee/2/role")
                         .with(httpBasic("a.a", "123"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(admin)))
+                        .content(objectMapper.writeValueAsString(role)))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -479,7 +482,8 @@ public class HrTests {
     @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
     public void test_modify_role_with_invalid_role() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        String role = "HR";
+        RoleDto role = new RoleDto();
+        role.setRole("HR");
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/hr/employee/2/role")
                         .with(httpBasic("a.a", "123"))
@@ -488,7 +492,7 @@ public class HrTests {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BadArgumentException))
-                .andExpect(result -> assertEquals("'EMPLOYEE' and 'ADMIN' are the only valid roles in the system", result.getResolvedException().getMessage()));
+                .andExpect(result -> assertEquals("'EMPLOYEE' and 'ADMIN' are the only valid roles in the system. You entered 'HR'", result.getResolvedException().getMessage()));
     }
 
     @Test //fel get est3amel DTOs to return data w fel post e3mel command objects to send data
@@ -970,6 +974,16 @@ public class HrTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+//    @Test
+//    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")
+//    public void test_get_employee_in_team() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders
+//                        .get("/hr/employee/team/111")
+//                        .with(httpBasic("a.a", "123"))
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value = "/data.xml")

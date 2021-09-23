@@ -28,6 +28,9 @@ public class Employee {
     @Column(nullable = false)
     private String lastName;
 
+    @Column(nullable=false)
+    private Date hireDate;
+
     @Column(columnDefinition = "int default 0")
     private Integer yearsOfExperience;
 
@@ -82,6 +85,35 @@ public class Employee {
     private AccountInformation accountInformation;
 
 
+
+    public void setDob(Date date) {
+        if (date != null) {
+            this.dob = new Date(date.getTime());
+        }
+    }
+
+    public void setGraduationDate(Date date) {
+        if (date != null) {
+            this.graduationDate = new Date(date.getTime());
+        }
+    }
+
+
+    public Date getDob() {
+        if (this.dob != null) {
+            return new Date(this.dob.getTime());
+        }
+        return null;
+    }
+
+    public Date getGraduationDate(){
+        if(this.graduationDate != null) {
+            return new Date(this.graduationDate.getTime());
+        }
+        return null;
+    }
+
+
     public void setGrossSalary(Double grossSalary) throws BadArgumentException {
             this.grossSalary = grossSalary;
     }
@@ -125,6 +157,7 @@ public class Employee {
                 + "First name: " + this.firstName + "\n"
                 + "last name: " + this.lastName + "\n"
                 + "Degree: " + this.degree + "\n"
+                + "Hired in: " + this.hireDate + "\n"
                 + "Years of experience: " + this.yearsOfExperience + "\n"
                 + "Days Off taken this year: " + this.daysOffTaken + "\n"
                 + "Bonus for this month: " + this.bonus + "\n"

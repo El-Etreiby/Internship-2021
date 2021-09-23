@@ -28,8 +28,9 @@ public class EmployeeService {
     private SalaryRepository salaryRepository;
     private AccountInformationRepository accountInformationRepository;
 
-    public String requestVacation(Integer employeeId) {
-        Optional<Employee> employee = employeeRepository.findById(employeeId);
+    public String requestVacation() {
+        Optional<AccountInformation> account = accountInformationRepository.findByUsername(this.getUsername());
+        Optional<Employee> employee = employeeRepository.findById(account.get().getEmployee().getEmployeeId());
         Employee toBeUpdated = employee.get();
         toBeUpdated.takeDayOff();
         employeeRepository.save(toBeUpdated);
@@ -102,4 +103,9 @@ public class EmployeeService {
         return "failed to update password";
     }
 
+    public int getDaysOff() {
+        Optional<AccountInformation> account = accountInformationRepository.findByUsername(this.getUsername());
+        Optional<Employee> employee = employeeRepository.findById(account.get().getEmployee().getEmployeeId());
+        return employee.get().getDaysOffTaken();
+    }
 }

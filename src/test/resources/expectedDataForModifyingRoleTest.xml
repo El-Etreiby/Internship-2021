@@ -3,10 +3,10 @@
     <department department_id="111" department_name = "dep2"/>
     <team team_id="112" team_name = "team1"/>
     <team team_id="113" team_name="team2"/>
-    <employee employee_id="1" bonus="0.0" raise="0.0" first_name="a" last_name="a" gender = "male" gross_salary="5500" dob="1990-1-15 00:00:00" national_id="1002" degree="SENIOR" days_off_taken="0"/>
-    <employee employee_id="2" bonus="0.0" raise="0.0" first_name="b" last_name="b" gender="female" gross_salary="10000" dob="1990-1-15 00:00:00" national_id="1003" degree="SENIOR" department_id="111" team_id="112" manager_id="1" days_off_taken="0"/>
-    <employee employee_id="3" bonus="0.0" raise="0.0" first_name="c" last_name="c" gender="female" gross_salary="15000" dob="1990-1-15 00:00:00" national_id="1004" degree="SENIOR" department_id="111" team_id="112" manager_id="2" days_off_taken="0"/>
-    <employee employee_id="4" bonus="0.0" raise="0.0" first_name="d" last_name="d" gender="male" gross_salary="20000" dob="1990-1-15 00:00:00" national_id="1005" degree="SENIOR" department_id="111" team_id="112" days_off_taken="0"/>
+    <employee employee_id="1" hire_date="2021-1-1 00:00:00" bonus="0.0" raise="0.0" first_name="a" last_name="a" gender = "male" gross_salary="5500" dob="1990-1-15 00:00:00" national_id="1002" degree="SENIOR" days_off_taken="0"/>
+    <employee employee_id="2" hire_date="2021-1-1 00:00:00" bonus="0.0" raise="0.0" first_name="b" last_name="b" gender="female" gross_salary="10000" dob="1990-1-15 00:00:00" national_id="1003" degree="SENIOR" department_id="111" team_id="112" manager_id="1" days_off_taken="0"/>
+    <employee employee_id="3" hire_date="2021-1-1 00:00:00" bonus="0.0" raise="0.0" first_name="c" last_name="c" gender="female" gross_salary="15000" dob="1990-1-15 00:00:00" national_id="1004" degree="SENIOR" department_id="111" team_id="112" manager_id="2" days_off_taken="0"/>
+    <employee employee_id="4" hire_date="2021-1-1 00:00:00" bonus="0.0" raise="0.0" first_name="d" last_name="d" gender="male" gross_salary="20000" dob="1990-1-15 00:00:00" national_id="1005" degree="SENIOR" department_id="111" team_id="112" days_off_taken="0"/>
     <account_information username = "a.a" password = "{bcrypt}$2a$10$l5ePscPNDPLSQ5algjg1S.u.gARwGuwcBv5intOhYn1sX1QLjyem." employee_id="1" role="ADMIN"/>
     <account_information username = "b.b" password = "{bcrypt}$2a$10$l5ePscPNDPLSQ5algjg1S.u.gARwGuwcBv5intOhYn1sX1QLjyem." employee_id="2" role="ADMIN"/>
     <account_information username = "c.c" password = "{bcrypt}$2a$10$l5ePscPNDPLSQ5algjg1S.u.gARwGuwcBv5intOhYn1sX1QLjyem." employee_id="3" role="EMPLOYEE"/>

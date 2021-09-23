@@ -27,6 +27,7 @@ public class EmployeeDto {
     private String gender;
     private Double raise;
     private Double bonus;
+    private Date hireDate;
 
 
     public EmployeeDto(Employee employee) {
@@ -39,6 +40,7 @@ public class EmployeeDto {
         this.nationalId = employee.getNationalId();
         this.degree = employee.getDegree();
         this.graduationDate = employee.getGraduationDate();
+        this.hireDate=employee.getHireDate();
         this.grossSalary = employee.getGrossSalary();
         this.gender = employee.getGender();
         this.expertise = employee.getExpertise();
@@ -53,12 +55,39 @@ public class EmployeeDto {
 
     }
 
+    public void setDob(Date date) {
+        if (date != null) {
+            this.dob = new Date(date.getTime());
+        }
+    }
+
+    public void setGraduationDate(Date date) {
+        if (date != null) {
+            this.graduationDate = new Date(date.getTime());
+        }
+    }
+
+    public Date getDob() {
+        if (this.dob != null) {
+            return new Date(this.dob.getTime());
+        }
+        return null;
+    }
+
+    public Date getGraduationDate(){
+        if(this.graduationDate != null) {
+            return new Date(this.graduationDate.getTime());
+        }
+        return null;
+    }
+
     public String toString() {
         String result = "ID: " + this.employeeId + "\n"
                 + "National ID: " + this.nationalId + "\n"
                 + "First Name: " + this.firstName + "\n"
                 + "last Name: " + this.lastName + "\n"
                 + "Degree: " + this.degree + "\n"
+                + "hired in: " + this.hireDate + "\n"
                 + "Years of experience: " + this.yearsOfExperience + "\n"
                 + "Days Off taken this year: " + this.daysOff + "\n"
                 + "DoB: " + this.dob + "\n"

@@ -25,7 +25,7 @@ public class TeamService {
         Iterable<Team> teams = teamRepository.findAll();
         Iterator<Team> allTeams = teams.iterator();
         while(allTeams.hasNext()){
-            if(allTeams.next().getTeamName() == team.getTeamName()){
+            if(allTeams.next().getTeamName().equals(team.getTeamName())){
                 throw new InternalException("Cannot create teams with duplicate names");
             }
         }

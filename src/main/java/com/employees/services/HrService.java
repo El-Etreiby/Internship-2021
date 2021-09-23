@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -32,11 +33,8 @@ public class HrService {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public void addNewEmployee(Employee employee, String providedPassword) throws BadArgumentException {
-        if(employee.getGender().equals(null)){
+        if(employee.getGender()==null){
             throw new BadArgumentException("Enter a value for the employee's gender");
-        }
-        if(employee.getDegree().equals(null)){
-            throw new BadArgumentException("Enter a value for the employee's degree");
         }
         if(!employee.getDegree().toString().equals("FRESH") &&
                 !employee.getDegree().toString().equals("INTERMEDIATE") &&
@@ -89,7 +87,10 @@ public class HrService {
                 throw new BadArgumentException("Enter a value less than 2021 or more than 1900 for the date of birth ");
             }
         }
-
+        long millis=System.currentTimeMillis();
+        Date now = new Date(millis);
+        employee.setHireDate(now);
+//        log.info("now: " +  now);
         AccountInformation accountInformation = new AccountInformation();
         String username = "";
         accountInformation.setEmployee(employee);
@@ -372,6 +373,14 @@ public class HrService {
 
         }
         return result;
+    }
+
+    public ArrayList<Employee> getEmployeesInTeam(int teamId){
+        Optional<Team> found = teamRepository.findById(teamId);
+        if(!found.isPresent()){
+            throw new TeamNotFoundException("this team does not exist");
+        }
+        return employeeRepository.getEmployeesInTeam(teamId);
     }
 
     public List<EmployeeDto> getAllEmployeesUnderManager(int managerId) {

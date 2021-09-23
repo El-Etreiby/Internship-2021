@@ -1,7 +1,7 @@
 package com.employees.controllers;
 
 import com.employees.DTOs.EmployeeDto;
-import com.employees.DTOs.roleDto;
+import com.employees.DTOs.RoleDto;
 import com.employees.models.*;
 import com.employees.services.DepartmentService;
 import com.employees.services.HrService;
@@ -10,7 +10,6 @@ import com.employees.services.TeamService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
@@ -50,9 +49,15 @@ public class HrController {
 
     @PutMapping(path = "/employee/{employeeId}/role")
     @ResponseBody
-    public String updateEmployeesRole(@PathVariable String employeeId, @RequestBody roleDto role) {
+    public String updateEmployeesRole(@PathVariable String employeeId, @RequestBody RoleDto role) {
         hrService.updateEmployeeRole(role.getRole(),Integer.parseInt(employeeId));
         return "Employee role modified successfully!";
+    }
+
+    @GetMapping(path = "/employee/team/{teamId}")
+    @ResponseBody
+    public String getEmployeesInTeam(@PathVariable String teamId) {
+        return "employees in team " + teamId + ": " + "\n" + hrService.getEmployeesInTeam(Integer.parseInt(teamId));
     }
 
     @DeleteMapping(path = "/employee/{id}") // Map ONLY POST Requests

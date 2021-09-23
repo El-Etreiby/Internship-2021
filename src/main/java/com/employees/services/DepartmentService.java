@@ -25,7 +25,7 @@ public class DepartmentService {
         Iterable<Department> departments = departmentRepository.findAll();
         Iterator<Department> allDepartments = departments.iterator();
         while(allDepartments.hasNext()){
-            if(allDepartments.next().getDepartmentName() == department.getDepartmentName()){
+            if(allDepartments.next().getDepartmentName().equals(department.getDepartmentName())){
                 throw new InternalException("Cannot create teams with duplicate names");
             }
         }
@@ -41,7 +41,7 @@ public class DepartmentService {
                 Employee temp = allEmployees.next();
                 System.out.println("next employee: " + temp);
                 System.out.println(temp.getDepartment());
-                if(temp.getDepartment()!=null && temp.getDepartment().getDepartmentId()==departmentToBeRemoved){
+                if(temp.getDepartment()!=null && temp.getDepartment().getDepartmentId().equals(departmentToBeRemoved)){
                     throw new BadArgumentException("this department has members in it and cannot be deleted");
                 }
             }
@@ -49,7 +49,6 @@ public class DepartmentService {
         }
         else
             throw new DepartmentNotFoundException("You're trying to delete a non existing department");
-        //java quartz  jacoco  ekteb tests el team, department, changing password variations, scheduled task, deleting variations(removing top manager, removing non existing)
     }
 
     public void updateDepartment(String newName, int departmentId) {

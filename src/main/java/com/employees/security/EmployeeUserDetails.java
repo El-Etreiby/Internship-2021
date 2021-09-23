@@ -10,7 +10,7 @@ import java.util.Collection;
 
 public class EmployeeUserDetails implements UserDetails {
 
-    private AccountInformation accountInformation;
+    private transient AccountInformation accountInformation;
 
     public EmployeeUserDetails(AccountInformation accountInformation){
         this.accountInformation = accountInformation;
